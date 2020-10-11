@@ -1,0 +1,280 @@
+<template>
+<div id="app">
+    <header class="app-header">
+        <div class="logo">
+            <router-link to="/"><img src="./media/logo.png" /></router-link>
+        </div>
+        <div class="admin" v-if="isAdmin">
+            <router-link to="/admin/series">Admin</router-link>
+        </div>
+        <section id="searchBar">
+            <form action="search.php">
+                <input type="search" name="search" placeholder="Votre recherche ici..."><!--
+                --><button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+        </section>
+        <nav>
+            <ul>
+                <li><router-link to="/catalogue"><i class="fas fa-book-open"></i><span>Catalogue</span></router-link></li>
+                <li v-if="!isAuthenticated"><a href="#" @click.prevent="openModal"><i class="fas fa-user"></i><span>Se connecter</span></a></li>
+                <li v-else><a href="#" @click.prevent="logOut"><i class="fas fa-user"></i><span>Se déconnecter</span></a></li>
+                <li><router-link to="/panier"><i class="fas fa-shopping-cart"></i><span class="price">0€</span></router-link></li>
+            </ul>
+        </nav>
+
+    </header>
+
+    <!-- Invisible header only used to push content on desktop with fixed header -->
+    <div class="invisible-header">
+    </div>
+
+    <div class="container">
+        <router-view/>
+    </div>
+
+
+    <footer class="app-footer">
+        test
+    </footer>
+
+    <LoginModal v-show="isModalVisible" @close="closeModal">
+
+    </LoginModal>
+</div>
+</template>
+
+<script>
+import LoginModal from '@/components/LoginModal.vue';
+import { mapGetters } from "vuex";
+export default {
+
+    data: function() {
+        return {
+                id: this.$route.params.id,
+                serie: Object,
+                isModalVisible: false
+            };
+    },
+    methods: {
+        openModal: function() {
+            this.isModalVisible = true
+        },
+        closeModal: function() {
+            this.isModalVisible = false
+        },
+        logOut: function() {
+            this.$store.dispatch('authLogout')
+        }
+    },
+    computed: {
+        ...mapGetters(["isAuthenticated", "authStatus", "isAdmin"])
+    },
+    watch: {
+      '$route' (to) {
+        document.title = to.meta.title + ' - MangaStore' || 'MangaStore'
+        // document.description = to.meta.description || 'MangaStore - Le site de vente de manga'
+        }
+    },
+    components: {
+        LoginModal
+    }
+}
+</script>
+
+
+<style lang="scss">
+/* ===================================================
+                GENERAL PROPERTIES
+================================================== */
+ul {
+  list-style: none;
+  padding:0;
+  margin:0;
+  text-align: left;
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size:62.5%;
+}
+
+//Container that will be used for all pages
+.container {
+    padding:20px;
+}
+
+
+a {
+    text-decoration: none;
+}
+
+body {
+    font-family: $main-font ;
+    font-size: 1.6rem;
+    text-align: center;
+    background-color: $secondary-color;
+}
+
+/* ===================================================
+                HEADER
+================================================== */
+.app-header {
+    width:100%;
+    background-color: $primary-color;
+
+    img {
+        max-width: 50%;
+        margin: 15px auto;
+    }
+
+    .container {
+        padding:20px;
+    }
+
+    nav {
+        font-size:2rem;
+    }
+
+    a {
+        color: $primary-color-text;
+    }
+
+
+
+}
+
+/* Quick nav
+================================================== */
+//the more important nav
+nav ul {
+    text-align: center;
+    .fas {
+        display:block;
+        margin-top:20px;
+    }
+}
+/* Search bar
+================================================== */
+
+#searchBar {
+    // padding:0 10px;
+    display:flex;
+    justify-content: center;
+}
+
+//Some properties for the two parts of the search bar to have the same size
+%searchBar-element{
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 1.6rem;
+    border-radius: 0;
+    -webkit-appearance: none;
+    border: 1px solid black;
+}
+
+#searchBar input {
+    @extend %searchBar-element;
+    border-right: none;
+}
+
+#searchBar button {
+    @extend %searchBar-element;
+}
+
+/* Sub nav
+================================================== */
+//this nav is less important so displayed at the bottom and 3 elements in a row
+#subNav {
+    margin-top: 20px;
+    padding:0 20px 15px;
+    display:flex;
+    justify-content:space-between;
+
+    li {
+        text-align: center;
+        width:33.33%;
+    }
+
+    .fas {
+        display:block;
+    }
+}
+
+
+.app-footer {
+    background-color: $primary-color;
+}
+@media screen and (min-width: 768px) {
+    .mobileOnly{
+        display:none;
+    }
+}
+
+/* ===================================================
+                DESKTOPS - 992 PX AND UP
+================================================== */
+@media screen and (min-width: 992px) {
+    body {
+        text-align: left;
+    }
+
+
+
+    /* ===================================================
+                        HEADER
+    ================================================== */
+    /* Header always stays on top
+    ================================================== */
+    .app-header {
+        position:fixed;
+        top:0;
+        z-index:2;
+
+        display:flex;
+        justify-content:center;
+        align-items: center;
+
+
+
+        #searchBar{
+            width:33.33%;
+
+            form {
+                width:100%;
+            }
+
+            input[type="search"] {
+                width:80%;
+            }
+        }
+
+        .logo {
+            width:33.33%;
+            margin-left:50px;
+            img {
+                width:10%;
+            }
+        }
+    }
+    /* Nav goes in one line, and reorder its content
+    ================================================== */
+    nav {
+        width:33.33%;
+
+        ul {
+            display:flex;
+            justify-content: space-around;
+        }
+    }
+
+    .invisible-header {
+        height:100px;
+    }
+
+
+}
+</style>

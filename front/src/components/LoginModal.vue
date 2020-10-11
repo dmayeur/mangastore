@@ -1,0 +1,215 @@
+<template lang="html">
+<transition
+    enter-active-class="animated fadeIn faster"
+    v-on:enter="enter"
+    leave-active-class="animated fadeOut faster"
+>
+    <div class="modal-backdrop" role="dialog">
+        <transition
+
+            enter-active-class="animated fadeInDown faster"
+            leave-active-class="animated fadeOutDown faster"
+            v-on:after-enter="focus"
+        >
+            <div class="modal" ref="modal" v-if="isEntering">
+                <header class="modal-header">
+                    <h2>
+                        Se connecter
+                    </h2>
+
+                    <button type="button" class="btn-close" @click="close" ref="btnclose">
+                        <i class="far fa-times-circle"></i>
+                    </button>
+                </header>
+                <section class="modal-body">
+                    <form class="" method="post" @submit.prevent="login">
+                        <div class="input-label-container">
+                            <label for="email">Votre e-mail ou votre pseudo:</label>
+                                <div class="input-container">
+                                    <i class="fas fa-at"></i>
+                                    <input type="text" name="login" v-model="email" required>
+                                </div>
+                        </div>
+                        <div class="input-label-container">
+                            <label for="password">Votre mot de passe:</label>
+                            <div class="input-container">
+                                <i class="fas fa-key"></i>
+                                <input type="password" name="password" v-model="password" required>
+                            </div>
+                        </div>
+                        <router-link to="/inscription" @click="close">Pas de compte? Créer en un.</router-link>
+                        <div class='button-container'>
+                            <Button @submit.prevent="login">Connexion</Button>
+
+                        </div>
+                    </form>
+                </section>
+                <footer class="modal-footer">
+                    <slot name="footer">
+                    </slot>
+                </footer>
+            </div>
+        </transition>
+    </div>
+</transition>
+</template>
+
+<script>
+import Button from '@/components/Button.vue';
+
+// import  {UsersBroker} from '@/js/UsersBroker.js';
+
+export default {
+    data: function() {
+        return {
+            isEntering: false,
+            email: "",
+            password: ""
+        };
+    },
+    components: {
+        Button
+    },
+    methods: {
+        close() {
+            this.isEntering= false;
+            this.$emit('close');
+        },
+
+        enter() {
+            this.isEntering= true;
+        },
+
+        focus() {
+            //We put focus on element for accessibility reasons
+            this.$refs.btnclose.focus();
+        },
+        login() {
+            let formDatas = new FormData();
+
+            formDatas.append('login',this.email);
+            formDatas.append('password',this.password);
+            this.$store.dispatch('authRequest', formDatas).then((response) => {
+                console.log(response);
+            }).catch((e) => {
+                console.log(e.response.data);
+            });
+            // console.log(event.target[0].value);
+            // let usersBroker = new UsersBroker();
+            // usersBroker.login(formDatas,this.loginResponse);
+        },
+        loginResponse(response) {
+            console.log(response);
+        }
+    },
+
+}
+</script>
+
+<style lang="scss" scoped>
+//center the modal vertically and darken screen
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+
+    width:90%;
+
+    background: $secondary-color;
+    box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
+
+}
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    padding:15px;
+
+    background-color: $primary-color;
+    color: $primary-color-text;
+
+}
+
+
+.modal-body {
+    position: relative;
+    width:100%;
+    padding: 20px 10px;
+
+}
+
+.btn-close {
+    padding: 20px;
+
+    color:$primary-color-text;
+    border: none;
+    font-size: 20px;
+
+    cursor: pointer;
+    font-weight: bold;
+    background: transparent;
+}
+
+.input-label-container {
+    width:90%;
+    margin: 0 auto;
+}
+
+.input-container {
+    display:flex;
+    margin:0 auto;
+    align-content:center;
+}
+
+label, input {
+    display:block;
+    text-align:left;
+
+    width:100%;
+    margin:0;
+}
+
+p {
+    margin-bottom:30px;
+}
+
+
+
+input {
+    padding: 5px;
+    border:1px solid black;
+    border-left:none;
+}
+
+.fas {
+    padding:5px;
+    background-color:$primary-color;
+    color:$primary-color-text;
+    border:1px solid black;
+    border-right:none;
+}
+
+.button-container {
+    margin: 20px 0;
+}
+
+/* ===================================================
+                DESKTOPS - 992 PX AND UP
+================================================== */
+@media screen and (min-width: 992px) {
+    .modal {
+        width:500px;
+    }
+}
+
+</style>
