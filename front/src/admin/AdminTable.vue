@@ -1,6 +1,6 @@
 <template lang="html">
     <div>
-        <table>
+        <table id="table">
             <thead>
                 <tr>
                     <th
@@ -15,7 +15,7 @@
             </thead>
             <tbody>
                 <tr
-                    v-for="line in body"
+                    v-for="(line,index) in body"
                     :key="line.id"
                 >
                     <td
@@ -24,8 +24,8 @@
                     >
                         {{value}}
                     </td>
-                    <td> <router-link :to="$route.path+'/'+line.id">Test</router-link> </td>
-                    <td>X</td>
+                    <td> <router-link :to="$route.path+'/'+line.id"><i class="fas fa-pen-fancy"></i></router-link> </td>
+                    <td @click="del(index)"><i class="fas fa-trash-alt"></i></td>
                 </tr>
             </tbody>
         </table>
@@ -38,11 +38,20 @@ export default {
     props: {
         header: Array,
         body: Array
+    },
+    methods: {
+        del(index) {
+            this.$emit('del',this.body[index].id);
+        }
+    },
+    mounted() {
+         document.querySelector('.test').DataTable();
     }
 }
 </script>
 
 <style lang="scss" scoped>
+
 table {
     width:100%;
     text-align:center;

@@ -7,8 +7,8 @@ class Database{
 
     // specify your own database credentials
     private $host = "localhost";
-    private $username = "dmayeur";
-    private $password = "Test01";
+    private $username = "root";
+    private $password = "";
     private $db_name = "mangastore";
 
     public $db;
@@ -49,5 +49,10 @@ class Database{
         $query = $this->db->prepare($sql);
         $query->execute($values);
         return $this->db->lastInsertId();
+    }
+
+    public function executeSQL(String $sql , $values){
+        $query = $this->db->prepare($sql);
+        return $query->execute($values);
     }
 }

@@ -17,6 +17,7 @@
       <AdminTable
         :header="tableHeader"
         :body="tableValues"
+        @del="del"
       >
       </AdminTable>
 </div>
@@ -97,9 +98,48 @@ export default {
                 }
                 case 'AdminAuthors': {
                     let authors = new AuthorsBroker();
-                    authors.getAll(this.updateTable);
+                    Promise.resolve(authors.getAll())
+                    .then( (response) => {
+                        this.updateTable(response)
+                    })
+                    .catch ((e) => {
+                        if(e.response.data.errorMessage) {
+                            this.errorMessage = e.response.data.errorMessage
+                        }
+                    });
                     break;
                 }
+            }
+        },
+        del(id){
+            switch(this.$route.name) {
+                case 'AdminAuthors': {
+                    let authors = new AuthorsBroker();
+                    Promise.resolve(authors.delete(id))
+                    .then( (response) => {
+                        console.log(response);
+                    })
+                    .catch ((e) => {
+                        if(e.response.data.errorMessage) {
+                            this.errorMessage = e.response.data.errorMessage
+                        }
+                    });
+                    break;
+                }
+                case 'AdminSeries': {
+                    let series = new SeriesBroker();
+                    Promise.resolve(series.delete(id))
+                    .then( (response) => {
+                        console.log(response);
+                    })
+                    .catch ((e) => {
+                        if(e.response.data.errorMessage) {
+                            this.errorMessage = e.response.data.errorMessage
+                        }
+                    });
+                    break;
+                }
+
             }
         }
     },
@@ -117,6 +157,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 nav {
     width:100%;
     background-color: $primary-color;

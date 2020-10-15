@@ -9,30 +9,13 @@
 class Request{
 
     protected $method;
-    protected $urlParts;
     protected $queryArray;
 
     function __construct() {
         $this->request();
-
-        if(isset($_POST['token'])){
-            
-        }
     }
 
     function request() {
-        //we remove trailing /
-        $request = rtrim( $_SERVER['REDIRECT_URL'] , '/');
-
-        //separate each part of the url
-        $parameters = explode("/",$request);
-
-        //we remove the useless first elements
-        $this->urlParts = array_splice($parameters, 3);
-
-        $request = implode("/",$parameters);
-
-
         // this is for GET method only
         // we build it that way because we want the user to be able to call ?category=x&category=y so $_GET is no good
         $this->queryArray=[];
@@ -46,7 +29,6 @@ class Request{
         if ($_SERVER['REQUEST_METHOD']==='GET') {
             $method="GET";
         }
-
 
         if ($_SERVER['REQUEST_METHOD']==='POST') {
             $method="POST";
@@ -64,11 +46,15 @@ class Request{
             return $this->queryArray;
         }
 
-
         if ($this->method === "POST" || $this->method === "PUT" || $this->method === "DELETE" ) {
             $body = [];
             foreach($_POST as $key => $value) {
-                $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+                if(is_array($value)){
+                    $body[$key] = explode(',',htmlspecialchars(implode(',', $value)));
+                } else {
+                    $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+                }
+
             }
             return $body;
         }
@@ -99,52 +85,5 @@ class Request{
         return $this;
     }
 
-    /**
-     * Get the value of Url Parts
-     *
-     * @return mixed
-     */
-    public function getUrlParts()
-    {
-        return $this->urlParts;
-    }
-
-    /**
-     * Set the value of Url Parts
-     *
-     * @param mixed $urlParts
-     *
-     * @return self
-     */
-    public function setUrlParts($urlParts)
-    {
-        $this->urlParts = $urlParts;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Query Array
-     *
-     * @return mixed
-     */
-    public function getQueryArray()
-    {
-        return $this->queryArray;
-    }
-
-    /**
-     * Set the value of Query Array
-     *
-     * @param mixed $queryArray
-     *
-     * @return self
-     */
-    public function setQueryArray($queryArray)
-    {
-        $this->queryArray = $queryArray;
-
-        return $this;
-    }
 
 }

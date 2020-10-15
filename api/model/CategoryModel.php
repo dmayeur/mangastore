@@ -8,7 +8,7 @@ class CategoryModel {
     }
 
     function getChilds($idParent){
-        $query = "SELECT name, category_parent FROM categories
+        $query = "SELECT id, name, category_parent FROM categories
                 WHERE category_parent = ?
         ;";
 

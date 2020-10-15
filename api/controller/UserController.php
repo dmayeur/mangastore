@@ -158,13 +158,14 @@ class UserController extends CoreController{
             $userInfos['username'] = $user['username'];
             $userInfos['email'] = $user['email'];
             $userInfos['role'] = $user['role'];
-            $auth = new Auth($userInfos);
+            $userInfos['id'] = $user['id'];
+            $auth = new Auth();
             $message = [
                 'message' =>  "Connexion réussie",
-                'token' => $auth->encode(),
+                'token' => $auth->encode($userInfos),
                 'role' => $userInfos['role']
             ];
-            
+
             $message = json_encode($message, JSON_FORCE_OBJECT);
             echo $message;
             exit;

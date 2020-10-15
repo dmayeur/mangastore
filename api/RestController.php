@@ -1,4 +1,7 @@
 <?php
+// var_dump($_POST);
+// exit();
+
 function customException($e)
 {
     //it's either an error we threw ourselves
@@ -49,7 +52,6 @@ $authorController = new AuthorController($request);
 include 'config/routes.php';
 
 set_exception_handler('customException');
-
 
 //special rule for our vue front server
 header("Access-Control-Allow-Origin: http://localhost:80");

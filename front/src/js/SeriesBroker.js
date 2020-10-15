@@ -6,18 +6,23 @@ export class SeriesBroker extends BrokerCore {
     }
 
     async getAll(queryURL){
-            return await this.APICommunicator.getRequest('/series'+queryURL);
-            // Promise.resolve(this.APICommunicator.getRequest('/series'+queryURL))
-            // .then( (response) => {
-            //     callback(response);
-            // })
-            // .catch (() => {
-            //     // callback(e.response)
-            // });
+        return await this.APICommunicator.getRequest('/series'+queryURL);
     }
 
     async getAdmin(){
-            return await this.APICommunicator.getRequest('/admin/series');
+        return await this.APICommunicator.getRequest('/admin/series');
+    }
+
+    async create(formDatas){
+        return await this.APICommunicator.postRequest('/series',formDatas);
+    }
+
+    async createManga(id,datas){
+        return await this.APICommunicator.postRequest('/series/'+id+'/mangas',datas);
+    }
+
+    async delete(id) {
+        return await this.APICommunicator.deleteRequest('/series/'+id)
     }
 
     getById(id){

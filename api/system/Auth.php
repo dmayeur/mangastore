@@ -53,13 +53,13 @@ class Auth {
         "aud"=>"http://localhost:80/",
     ];
 
-    public function __construct($user) {
+    public function __construct() {
+    }
+
+    public function encode($user) {
         $this->payload['nbf']=time();
         $this->payload['iat']=time();
         $this->payload['user']=$user;
-    }
-
-    public function encode() {
         return JWT::encode($this->payload, $this->privateKey,'RS256');
     }
 

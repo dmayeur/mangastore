@@ -77,7 +77,7 @@ const routes = [
     meta: {
       title: 'Admin'
     },
-    component: () => import('../admin/Admin.vue')
+    component: () => import('../admin/modify/ModifySerie.vue')
 },
 {
     path: '/admin/series/create',
@@ -85,7 +85,7 @@ const routes = [
     meta: {
       title: 'Admin'
     },
-    component: () => import('../admin/create/createSerie.vue')
+    component: () => import('../admin/create/CreateSerie.vue')
 },
 {
     path: '/admin/editeurs',
@@ -118,6 +118,22 @@ const routes = [
       title: 'Admin - Auteurs'
     },
     component: () => import('../admin/Admin.vue')
+},
+{
+    path: '/admin/auteurs/:id',
+    name: 'AdminAuthorsModify',
+    meta: {
+      title: 'Admin - Auteurs'
+    },
+    component: () => import('../admin/create/CreateAuthor.vue')
+},
+{
+    path: '/admin/auteurs/create',
+    name: 'AdminAuthorsCreate',
+    meta: {
+      title: 'Admin - Auteurs'
+    },
+    component: () => import('../admin/create/CreateAuthor.vue')
 }
 ]
 

@@ -56,10 +56,6 @@ class SerieController extends CoreController{
                 case 'page':
                     $this->page = (int) $value;
                     break;
-                case 'content':
-                    //we sanatize even before putting them into the db
-                    $this->content = htmlspecialchars($value);
-                    break;
             }
         }
 
@@ -124,7 +120,91 @@ class SerieController extends CoreController{
         }
     }
 
+    public function create(){
+        $body = $this->request->getBody();
+
+        if (empty($body['name']) || empty($body['categories'][0]) || empty($body['editor']) || empty($body['price']) || empty($body['authors'][0]) ){
+            throw new RestException('Paramètres manquants',401);
+        }
+
+        $serieId = $this->model->create($body['name'],$body['editor'],$body['price']);
+        if(!$serieId){
+            throw new RestException("Erreur",400);
+        }
+
+        foreach ($body['categories'] as $category) {
+            $this->model->createCategory($serieId,$category);
+        }
+
+        foreach($body['authors'] as $author) {
+            $this->model->createAuthor($serieId,$author);
+        }
+
+        $this->sendResponse(201,[
+            'message' => 'Création réussie',
+            'id' => $serieId
+        ]);
+
+
+    }
+
+    public function postReview($id) {
+
+        $serie = $this->model->getById($id);
+        if( !$serie ){
+            throw new RestException("Aucune série correspondant à l'id",404);
+        }
+
+        if( !isset($_POST['token']) ) {
+            throw new RestException("JWT token manquant.", 401);
+        }
+
+        $auth = new Auth();
+        try {
+            $user = $auth->decode($_POST['token']);
+
+        } catch (Exception $e) {
+            throw new RestException("Erreur mauvais token",401);
+        }
+
+    }
+
+
+
+
+    public function postManga($id) {
+        $serie = $this->model->getById($id);
+        if( !$serie ){
+            throw new RestException("Aucune série correspondant à l'id",404);
+        }
+        $filename = null;
+        if (isset($_FILES['cover'])){
+            $image = $_FILES['cover'];
+
+            $utilities = new Utilities();
+            try {
+                $utilities->checkImage($image);
+            } catch (RestException $e) {
+                throw new RestException($e->getMessage(),$e->getCode());
+            }
+
+            $title = $utilities->hyphenize($serie['title']);
+            $filename = $title . '/' . $title . '-' . $_POST['volume'] . strrchr($image['name'], '.') ;
+            $utilities->uploadImage($image,$title,$filename);
+
+        }
+        $mangaModel = new MangaModel();
+        $mangaModel->createManga($id, $_POST['volume'], $_POST['releaseDate'],$_POST['stock'],$filename);
+
+
+    }
+
     public function delete($id){
-        var_dump($id);
+        $result = $this->model->delete($id);
+        if(!$result) {
+            throw new RestException('Erreur SQL',400);
+        } else {
+            $this->sendResponse(201,'Supression réussie');
+        }
     }
 }

@@ -128,15 +128,15 @@ class SerieModel {
 
 
     function getAllAdmin(){
-        $query = "SELECT series.id as Id, series.name as Titre, COUNT(DISTINCT mangas.volume) as 'Nb volumes', GROUP_CONCAT(DISTINCT authors.name SEPARATOR ', ') as Auteur, editors.name as Editeur  FROM series
-                  INNER JOIN mangas ON mangas.serie_id = series.id
-                  INNER JOIN authors_series ON authors_series.serie_id = series.id
-                  INNER JOIN authors ON authors.id = authors_series.author_id
+        $query = "SELECT series.id as id, series.name as Titre, COUNT(DISTINCT mangas.volume) as 'Nb volumes', GROUP_CONCAT(DISTINCT authors.name SEPARATOR ', ') as Auteur, editors.name as Editeur  FROM series
+                  LEFT JOIN mangas ON mangas.serie_id = series.id
+                  LEFT JOIN authors_series ON authors_series.serie_id = series.id
+                  LEFT JOIN authors ON authors.id = authors_series.author_id
                   LEFT JOIN series_categories ON series.id = series_categories.serie_id
                   LEFT JOIN categories ON categories.id = series_categories.category_id
                   LEFT JOIN editors on editors.id = series.editor_id
                   GROUP BY series.id
-                  ORDER BY series.id
+                  ORDER BY series.id desc
                 ;";
         $results = $this->db->getQuery($query);
 
@@ -146,11 +146,11 @@ class SerieModel {
 
     public function getById($id) {
         $query = "SELECT series.id as id, series.name as title, COUNT(DISTINCT volume) as nbVolumes, image, GROUP_CONCAT(DISTINCT authors.name) as author, price, editors.name as editor  FROM series
-                  INNER JOIN mangas ON mangas.serie_id = series.id
-                  INNER JOIN authors_series ON authors_series.serie_id = series.id
-                  INNER JOIN authors ON authors.id = authors_series.author_id
-                  INNER JOIN prices on series.price_code = prices.code
-                  INNER JOIN editors on series.editor_id = editors.id
+                  LEFT JOIN mangas ON mangas.serie_id = series.id
+                  LEFT JOIN authors_series ON authors_series.serie_id = series.id
+                  LEFT JOIN authors ON authors.id = authors_series.author_id
+                  LEFT JOIN prices on series.price_code = prices.code
+                  LEFT JOIN editors on series.editor_id = editors.id
                   WHERE series.id = ?
                   GROUP BY series.id
 
@@ -159,5 +159,35 @@ class SerieModel {
         return $this->db->getQueryOne($query, [$id]);
     }
 
+    public function create($name, $editor, $price){
+        $query = "INSERT INTO series (name, editor_id, price_code)
+                 VALUES (?, ?, ?)
+        ";
 
+        return $this->db->postQuery($query,[$name, $editor, $price]);
+    }
+
+
+    public function createCategory($serie, $category){
+        $query = "INSERT INTO series_categories (serie_id,category_id)
+                 VALUES (?, ?)
+        ";
+
+        return $this->db->postQuery($query,[$serie, $category]);
+    }
+
+    public function createAuthor($serie, $author){
+        $query = "INSERT INTO authors_series (serie_id,author_id)
+                 VALUES (?, ?)
+        ";
+
+        return $this->db->postQuery($query,[$serie, $author]);
+    }
+
+    function delete($id) {
+        $query = "DELETE FROM series
+                 WHERE id = ?";
+
+        return $this->db->executeSQL($query,[$id]);
+    }
 }

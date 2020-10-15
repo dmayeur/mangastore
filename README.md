@@ -1,4 +1,4 @@
-# MangaStore
+# mangastore
 
 ## Description
 
@@ -8,7 +8,7 @@ This is a fictive e-commerce site done as 3WA end of formation project.
 
 ### Database
 
-Use the SQL export of the database
+Use the SQL export of the database to create the DB
 
 ### In api folder
 
@@ -16,6 +16,8 @@ Use the SQL export of the database
 composer install
 ```
 
+The server must accept htaccess redirections.
+You may need to change the configuration of the DB access in system/Database.php
 
 ### In front folder
 
@@ -23,14 +25,19 @@ composer install
 npm install
 ```
 
-Then change vue.config.js proxy accordingly to your config (mine made with default xampp config)
+You may need to change vue.config.js proxy accordingly to your config (mine made with default xampp config)
 
+```
+npm run serve
+```
+
+And you can finally access to the site
 
 ## Technologies used
 
 ### Front
 
-I used VUE.JS for the site and CRUD.
+I made everything with Vue.js
 
 The connection with the back is made with API calls with Axios.
 
@@ -39,5 +46,10 @@ The connection with the back is made with API calls with Axios.
 The back is a RESTful API.
 
 I made a tiny framework doing stuff like routing, auth and basic REST functions.
+The project respect MVC pattern.
 
 The authentication is made using JWT tokens to keep it as RESTful as it gets.
+
+## Examples
+
+A few screen to show how the site look like:
