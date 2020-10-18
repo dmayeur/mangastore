@@ -9,14 +9,14 @@ class UserModel {
     }
 
     public function getByUsername($username){
-        $query = "SELECT username, email, password, role FROM users
+        $query = "SELECT username, email, password, role, id FROM users
                 WHERE username = ?";
 
         return $this->db->getQueryOne($query,[$username]);
     }
 
     public function getByEmail($email){
-        $query = "SELECT username, email,  password, role FROM users
+        $query = "SELECT username, email,  password, role, id FROM users
                 WHERE email = ?";
 
         return $this->db->getQueryOne($query,[$email]);

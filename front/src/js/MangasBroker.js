@@ -6,7 +6,7 @@ export class MangasBroker extends BrokerCore {
     }
 
     async getAll(queryURL){
-            return await this.APICommunicator.getRequest('/manga'+queryURL);
+            return await this.APICommunicator.getRequest('/mangas'+queryURL);
     }
 
 }

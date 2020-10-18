@@ -14,15 +14,10 @@ class CategoryController extends CoreController{
         $this->checkResponse($results);
     }
 
-    public function handleGetRequest() {
-
-        $results = null;
-
-        if(count($this->request->getUrlParts())==1) {
-            $results = $this->model->getAll();
-        }
+    public function getAdmin() {
+        $results = $this->model->getAdmin();
 
         $this->checkResponse($results);
-
     }
+
 }

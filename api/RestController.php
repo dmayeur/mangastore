@@ -47,6 +47,7 @@ $categoryController = new CategoryController($request);
 $editorController = new EditorController($request);
 $userController = new UserController($request);
 $authorController = new AuthorController($request);
+$mangaController = new MangaController($request);
 
 //the routes of our router
 include 'config/routes.php';

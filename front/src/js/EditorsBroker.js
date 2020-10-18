@@ -13,8 +13,16 @@ export class EditorsBroker extends BrokerCore {
         return await this.APICommunicator.getRequest('/editors');
     }
 
+    async getById(editor){
+        return await this.APICommunicator.getRequest('/editors/'+editor);
+    }
+
     async getPrices(editor){
         return await this.APICommunicator.getRequest('/editors/'+editor+'/prices');
 
+    }
+
+    async create(datas) {
+        return await this.APICommunicator.postRequest('/editors',datas)
     }
 }

@@ -1,0 +1,87 @@
+@mixin input-field {
+    display:block;
+    width:100%;
+    margin: 0;
+    text-align:left;
+
+    color: #333333;
+    &:focus{
+        outline:0;
+        color: #000;
+        border-color:$primary-color;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25)
+    }
+}
+
+/* ===================================================
+    media queries breakspoints
+================================================== */
+
+$tablet-width: 768px;
+$desktop-width: 992px;
+$large-width: 1200px;
+$extra-width: 1600px;
+
+@mixin tablet {
+    @media (min-width: #{$tablet-width}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{$desktop-width}) {
+        @content;
+    }
+}
+
+@mixin large {
+    @media (min-width: #{$large-width}) {
+        @content;
+    }
+}
+
+@mixin extralarge {
+    @media (min-width: #{$extra-width}) {
+        @content;
+    }
+}
+
+/* ===================================================
+    flex properties to display everything same size vertically
+================================================== */
+
+@mixin basic-flex {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+}
+
+@mixin articles {
+    @include basic-flex;
+
+    //So last line is displayed at the left center
+    &:after {
+      content: "";
+      flex: auto;
+    }
+
+    li {
+        display:flex;
+        flex: 0 0 40%;
+        font-size: 2rem;
+        text-align: left;
+    }
+}
+
+@mixin article{
+    display:flex;
+    flex-direction:column;
+
+    padding:10px;
+    background-color: #fff;
+    color:$tertiary-color;
+
+    transition: box-shadow 0.3s, transform 0.3s;
+
+    margin-bottom:20px;
+}

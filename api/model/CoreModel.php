@@ -1,7 +1,5 @@
 <?php
 
-require_once("CoreModel.php");
-
 class CoreModel {
 
     /**
@@ -9,8 +7,8 @@ class CoreModel {
      * @param  Array  $whereParameters [description]
      * @return [array]                  [array with the query text and the values associated]
      */
-    private function transformParameters(Array $whereParameters){
-
+    protected function transformParameters(Array $whereParameters){
+        
         if(empty($whereParameters)){
             return [
                 'text'=>"",
@@ -55,5 +53,5 @@ class CoreModel {
             'values'=>$values
         ];
     }
-    
+
 }

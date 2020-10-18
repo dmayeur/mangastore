@@ -105,18 +105,13 @@ class CoreController{
      * @return [type]          [description]
      */
     public function checkResponse($results){
-
-            //no result
-            if( empty($results) || !$results ) {
-                $this->setHttpHeaders('404');
-                exit();
-            }
-
-            //We
-            $results = json_encode($results, JSON_FORCE_OBJECT);
-            $this->setHttpHeaders('200');
-            echo $results;
-            exit();
+        if($results) {
+            $this->sendResponse(200, $results);
+        } else {
+            $this->sendResponse(404, [
+                'errorMessage' => 'Aucun résultat'
+            ]);
+        }
     }
 
 

@@ -22,11 +22,8 @@ class UserController extends CoreController{
         $this->request = $request;
         $this->model = new UserModel();
 
-        if($this->request->getMethod()==='GET'){
-            $this->queryURLtoParameters($this->request->getBody());
-        } else {
-            $this->bodyRequestToParameters($this->request->getBody());
-        }
+
+        $this->bodyRequestToParameters($this->request->getBody());
 
     }
 
@@ -54,35 +51,6 @@ class UserController extends CoreController{
                     break;
                 case 'city':
                     $this->city= $value;
-                    break;
-            }
-        }
-    }
-
-    public function queryURLtoParameters($query) {
-        if(empty($query)){
-            return;
-        }
-
-        //the main controller already split each query part into an array
-        foreach ($query as $queryPart) {
-
-            //The parts of the query are separated by an =
-            list($key,$value) = explode("=",$queryPart);
-
-            //we do a switch to do a whitelist of acceptable parameters (others are just ignored)
-            switch ($key) {
-                case 'login':
-                    $this->login=$value;
-                    break;
-                case 'password':
-                    $this->password=$value;
-                    break;
-                case 'username':
-                    $this->username= $value;
-                    break;
-                case 'email':
-                    $this->email= $value;
                     break;
             }
         }
@@ -154,7 +122,7 @@ class UserController extends CoreController{
 
         if( password_verify($this->password, $user['password']) ) {
 
-            $this->setHttpHeaders(200);
+            // $this->setHttpHeaders(200);
             $userInfos['username'] = $user['username'];
             $userInfos['email'] = $user['email'];
             $userInfos['role'] = $user['role'];
@@ -166,21 +134,23 @@ class UserController extends CoreController{
                 'role' => $userInfos['role']
             ];
 
-            $message = json_encode($message, JSON_FORCE_OBJECT);
-            echo $message;
-            exit;
+            $this->sendResponse(200,$message);
 
         } else {
-
-            $this->setHttpHeaders(401);
-            $message = [
+            $this->sendResponse(401, [
                 'errorMessage' =>  "Le mot de passe est incorrect."
-            ];
-            $message = json_encode($message, JSON_FORCE_OBJECT);
-            echo $message;
-            exit;
-
+            ]);
         }
+    }
+
+    public function isAdmin() {
+        if(!isset($_POST['token'])) {
+            throw new RestException('Token manquant',401);
+        }
+
+        $auth = new Auth();
+
+        var_dump($auth->decode($_POST['token']));
     }
 
 }

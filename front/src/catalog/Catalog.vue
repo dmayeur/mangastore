@@ -1,7 +1,11 @@
 <template lang="html">
 <div class="catalog">
     <h1>Notre catalogue</h1>
-
+    <div class="catalog-search--pages">
+        <Button v-for="n in pages-1" :key="n" @click="onPageChange(n)">
+            {{n}}
+        </Button>
+    </div>
         <div class="catalog-search--toggle">
             <!-- Display the aside in mobile -->
             <input type="checkbox" id="filter" />
@@ -31,12 +35,6 @@
             </transition-group>
 
         </ul>
-
-        <div class="catalog-search--pages">
-            <Button v-for="n in pages" :key="n" @click="onPageChange(n)">
-                {{n}}
-            </Button>
-        </div>
 </div>
 </template>
 
@@ -59,7 +57,7 @@ export default {
             categoriesChecked: [],
             search: "",
             queryURL: "?sort=alphabetical",
-            pages: 0,
+            pages: 1,
             page: 1,
             loadingMangas: false
         }
@@ -169,6 +167,12 @@ export default {
     flex-flow: row wrap;
     justify-content: space-around;
 
+    //So it doesn't break the display
+    &:after {
+      content: "";
+      flex: auto;
+    }
+    
     li {
         display:flex;
         flex: 0 0 40%;
@@ -177,10 +181,14 @@ export default {
     }
 }
 
+.catalog-search--pages {
+    text-align: right;
+    flex: 0 0 100%;
+}
 /* ===================================================
                 TABLETS - 768 PX AND UP
 ================================================== */
-@media screen and (min-width: 768px) {
+@include tablet {
 
     /* Catalog
     ================================================== */
@@ -209,11 +217,7 @@ export default {
             flex: 1 0 0;
             padding-left:20px;
 
-            //So it doesn't break the display
-            &:after {
-              content: "";
-              flex: auto;
-            }
+
 
             li {
                 width:33.33%;
@@ -228,7 +232,7 @@ export default {
 /* ===================================================
                 DESKTOPS - 992 PX AND UP
 ================================================== */
-@media screen and (min-width: 992px) {
+@include desktop {
     aside {
         margin-left:0px;
         margin-right:10px;
@@ -240,7 +244,7 @@ export default {
 /* ===================================================
                 LARGE SCREEN
 ================================================== */
-@media screen and (min-width: 1200px) {
+@include large {
     .catalog {
         .catalog-search--results {
             li {
@@ -253,7 +257,7 @@ export default {
 /* ===================================================
                 EXTRA LARGE SCREEN
 ================================================== */
-@media screen and (min-width: 1600px) {
+@include extralarge {
     .catalog {
         .catalog-search--results {
             li {

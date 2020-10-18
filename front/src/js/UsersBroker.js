@@ -5,12 +5,12 @@ export class UsersBroker extends BrokerCore {
         super();
     }
 
-    async login(formDatas){
-        return await(this.APICommunicator.postRequest('/users/authentication',formDatas));
+    async login(datas){
+        return await(this.APICommunicator.postRequest('/users/authentication',datas));
     }
 
-    async signUp(formDatas){
-        return await this.APICommunicator.postRequest('/users/creation',formDatas);
+    async signUp(datas){
+        return await this.APICommunicator.postRequest('/users/creation',datas);
 
     }
 

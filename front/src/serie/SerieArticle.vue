@@ -3,7 +3,7 @@
       <img :src="getImgPath(manga.image)" :alt="`Couverture de ${manga.title}`">
       <p>Volume {{manga.volume}}</p>
       <Button @click="addCart">
-          Ajouter au panier
+          <i class="fas fa-shopping-cart"></i>
       </Button>
   </article>
 </template>
@@ -36,19 +36,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 article {
-    display: flex;
-    flex-direction:column;
-    max-width:200px;
-
-    padding:10px;
-
-    background-color:#fff;
-    color:$tertiary-color;
+    @include article;
+    width:150px;
 }
 
-img{
-    max-width:200px;
+img {
+    max-width:100%;
+}
+
+//make the add cart button aligned
+p  {
+    flex: 1 0 auto;
 }
 
 .add-cart {
@@ -57,4 +57,9 @@ img{
     padding:5px;
     text-align:center;
 }
+
+button {
+    font-size:1.5rem;
+}
+
 </style>

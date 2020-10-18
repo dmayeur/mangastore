@@ -25,7 +25,7 @@ const routes = [
       meta: {
         title: 'Catalogue'
       },
-      component: () => import('../views/Catalog.vue')
+      component: () => import('../catalog/Catalog.vue')
 },
 {
     path: '/serie/:id',
@@ -33,7 +33,7 @@ const routes = [
     meta: {
       title: 'Serie'
     },
-    component: () => import('../views/Serie.vue')
+    component: () => import('../serie/Serie.vue')
 },
 {
     path: '/contact',

@@ -98,9 +98,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .banner img{
     max-width:100%;
 }
+
+
 .serie-description{
     li{
 
@@ -120,16 +123,7 @@ export default {
 }
 
 .serie-mangas ul {
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:space-around;
-
-    li {
-        padding:2rem;
-
-
-    }
-
+    @include articles;
 }
 
  .comments, #showPost .article{
@@ -174,6 +168,27 @@ export default {
     padding:10px;
     color:white;
     background-color: #4A90E2;
+}
+
+/* ===================================================
+                TABLETS - 768 PX AND UP
+================================================== */
+@include tablet {
+    .serie-mangas {
+
+    }
+}
+
+/* ===================================================
+                EXTRA LARGE SCREEN
+================================================== */
+@include extralarge {
+    .serie-mangas {
+        ul li {
+            width:10%;
+            flex:0 1 auto;
+        }
+    }
 }
 
 </style>

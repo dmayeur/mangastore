@@ -54,6 +54,12 @@ const actions = {
               Cookie.eraseCookie('role');
               resolve();
           });
+    },
+    isAdmin({commit}){
+        return new Promise(resolve => {
+            commit('authCheck');
+            resolve();
+        })
     }
 };
 const getters = {

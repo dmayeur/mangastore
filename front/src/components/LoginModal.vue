@@ -22,14 +22,17 @@
                     </button>
                 </header>
                 <section class="modal-body">
-                    <form class="" method="post" @submit.prevent="login">
+                    <form class="" method="post" @submit.prevent="onLogin">
                         <div class="input-label-container">
                             <label for="email">Votre e-mail ou votre pseudo:</label>
                                 <div class="input-container">
                                     <i class="fas fa-at"></i>
-                                    <input type="text" name="login" v-model="email" required>
+                                    <input type="text" name="login" v-model="login" required>
                                 </div>
                         </div>
+                        <Notice v-if="errorCode==403">
+                            Le nom d'utilisateur ou l'adresse mail n'existe pas
+                        </Notice>
                         <div class="input-label-container">
                             <label for="password">Votre mot de passe:</label>
                             <div class="input-container">
@@ -37,6 +40,9 @@
                                 <input type="password" name="password" v-model="password" required>
                             </div>
                         </div>
+                        <Notice v-if="errorCode==401">
+                            Le mot de passe est incorrect
+                        </Notice>
                         <router-link to="/inscription" @click="close">Pas de compte? Créer en un.</router-link>
                         <div class='button-container'>
                             <Button @submit.prevent="login">Connexion</Button>
@@ -55,19 +61,20 @@
 
 <script>
 import Button from '@/components/Button.vue';
-
-// import  {UsersBroker} from '@/js/UsersBroker.js';
+import Notice from '@/components/Notice.vue';
 
 export default {
     data: function() {
         return {
             isEntering: false,
-            email: "",
-            password: ""
+            login: "",
+            password: "",
+            errorCode: false
         };
     },
     components: {
-        Button
+        Button,
+        Notice
     },
     methods: {
         close() {
@@ -83,22 +90,17 @@ export default {
             //We put focus on element for accessibility reasons
             this.$refs.btnclose.focus();
         },
-        login() {
-            let formDatas = new FormData();
-
-            formDatas.append('login',this.email);
-            formDatas.append('password',this.password);
-            this.$store.dispatch('authRequest', formDatas).then((response) => {
-                console.log(response);
-            }).catch((e) => {
-                console.log(e.response.data);
-            });
-            // console.log(event.target[0].value);
-            // let usersBroker = new UsersBroker();
-            // usersBroker.login(formDatas,this.loginResponse);
-        },
-        loginResponse(response) {
-            console.log(response);
+        onLogin() {
+            this.$store.dispatch('authRequest',{
+                login:this.login,
+                password: this.password
+            }).then( () => {
+                //close the window if it's a success
+                this.$emit('close');
+                this.errorCode="";
+            }).catch ((e) => {
+                this.errorCode=e.response.status;
+            })
         }
     },
 
@@ -142,7 +144,8 @@ export default {
 
 .modal-body {
     position: relative;
-    width:100%;
+    width:90%;
+    margin: 0 auto;
     padding: 20px 10px;
 
 }
@@ -160,8 +163,7 @@ export default {
 }
 
 .input-label-container {
-    width:90%;
-    margin: 0 auto;
+    margin-bottom:25px;
 }
 
 .input-container {
@@ -171,11 +173,15 @@ export default {
 }
 
 label, input {
-    display:block;
-    text-align:left;
+    // display:block;
+    // text-align:left;
+    //
+    // width:100%;
+    // margin:0;
+}
 
-    width:100%;
-    margin:0;
+input {
+    @include input-field;
 }
 
 p {

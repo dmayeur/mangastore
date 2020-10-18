@@ -1,6 +1,11 @@
 <template lang="html">
 <div :class="`${type}`">
-    {{message}}
+    <slot>
+
+    </slot>
+    <button type="button" class="btn-close" @click="remove" ref="btnclose" v-if="closable">
+        <i class="far fa-times-circle"></i>
+    </button>
 </div>
 </template>
 
@@ -11,6 +16,10 @@ export default {
         type: {
             default: "error",
             type: String
+        },
+        closable: {
+            default: false,
+            type: Boolean
         }
     }
 }

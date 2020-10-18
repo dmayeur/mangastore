@@ -43,6 +43,7 @@ export default {
     },
     methods: {
         updateTable: function(response) {
+            console.log(response);
             this.tableHeader=[];
             this.tableValues=[];
             let arr=[];
@@ -72,7 +73,7 @@ export default {
                 }
                 case 'AdminCategories': {
                     let categories = new CategoriesBroker();
-                    Promise.resolve(categories.getAll())
+                    Promise.resolve(categories.getAdmin())
                     .then( (response) => {
                         this.updateTable(response)
                     })
@@ -144,6 +145,7 @@ export default {
         }
     },
     mounted(){
+        console.log(this.$route);
         //we initialize the table when it's mounted
         this.onChangeRoute(this.$route.name);
     },

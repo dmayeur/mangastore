@@ -24,9 +24,15 @@ $router->delete('series/:id', [$serieController,"delete"]);
 
 
 /**
+* MANGAS ROUTES
+*/
+$router->get('/mangas', [$mangaController,"getAll"]);
+
+/**
 * CATEGORIES ROUTES
 */
 $router->get('/categories', [$categoryController,"getAll"]);
+$router->get('/admin/categories', [$categoryController,"getAdmin"]);
 
 $router->post('/categories', [$categoryController,"create"]);
 
@@ -39,6 +45,7 @@ $router->delete('/categories/:id', [$categoryController,"delete"]);
 * EDITORS ROUTES
 */
 $router->get('/editors', [$editorController,"getAll"]);
+$router->get('/editors/:id', [$editorController,"getById"]);
 $router->get('/editors/:id/prices', [$editorController,"getPrice"]);
 
 $router->post('/editors', [$editorController,"create"]);
@@ -64,5 +71,7 @@ $router->delete('/authors/:id', [$authorController,"delete"]);
 /**
 *  USERS ROUTES
 */
+
+$router->post('/users/admin', [$userController, 'isAdmin']);
 $router->post('/users/creation', [$userController,'createAccount']);
 $router->post('/users/authentication', [$userController,'login']);

@@ -1,6 +1,6 @@
 <template lang="html">
     <div>
-        <table id="table">
+        <table id="table" class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <th
@@ -9,8 +9,7 @@
                     >
                         {{column}}
                     </th>
-                    <th>Modifier</th>
-                    <th>Supprimer</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,12 +19,14 @@
                 >
                     <td
                         v-for="value in line"
-                        :key="value.id"
+                        :key="value"
                     >
-                        {{value}}
+                        {{value || "-"}}
                     </td>
-                    <td> <router-link :to="$route.path+'/'+line.id"><i class="fas fa-pen-fancy"></i></router-link> </td>
-                    <td @click="del(index)"><i class="fas fa-trash-alt"></i></td>
+                    <td>
+                        <router-link :to="$route.path+'/'+line.id"><i class="fas fa-pen-fancy"></i></router-link>
+                        <i class="fas fa-trash-alt" @click="del(index)"></i>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -34,6 +35,7 @@
 </template>
 
 <script>
+
 export default {
     props: {
         header: Array,
@@ -43,9 +45,6 @@ export default {
         del(index) {
             this.$emit('del',this.body[index].id);
         }
-    },
-    mounted() {
-         document.querySelector('.test').DataTable();
     }
 }
 </script>

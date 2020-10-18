@@ -18,7 +18,7 @@
                 <li><router-link to="/catalogue"><i class="fas fa-book-open"></i><span>Catalogue</span></router-link></li>
                 <li v-if="!isAuthenticated"><a href="#" @click.prevent="openModal"><i class="fas fa-user"></i><span>Se connecter</span></a></li>
                 <li v-else><a href="#" @click.prevent="logOut"><i class="fas fa-user"></i><span>Se déconnecter</span></a></li>
-                <li><router-link to="/panier"><i class="fas fa-shopping-cart"></i><span class="price">0€</span></router-link></li>
+                <li><router-link to="/panier"><i class="fas fa-shopping-cart"></i><span class="price">{{cartPrice}}€ ({{cartNbItems}})</span></router-link></li>
             </ul>
         </nav>
 
@@ -67,16 +67,24 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["isAuthenticated", "authStatus", "isAdmin"])
+        ...mapGetters(["isAuthenticated", "authStatus", "isAdmin","cartPrice","cartNbItems"]),
+        animatedPrice: function() {
+            return this.tweenedNumber.toFixed(0);
+        }
     },
     watch: {
-      '$route' (to) {
-        document.title = to.meta.title + ' - MangaStore' || 'MangaStore'
-        // document.description = to.meta.description || 'MangaStore - Le site de vente de manga'
+        '$route' (to) {
+            document.title = to.meta.title + ' - MangaStore' || 'MangaStore'
+        },
+        cartPrice: function() {
+
         }
     },
     components: {
         LoginModal
+    },
+    created() {
+        this.$store.dispatch('getTotalPrice');
     }
 }
 </script>

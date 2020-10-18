@@ -1,12 +1,16 @@
 <template lang="html">
 <div class="cart">
+    <ul v-if="this.items">
 
+    </ul>
+    <p v-else>
+        Votre panier est vide.
+    </p>
 </div>
 </template>
 
 <script>
 // import { mapGetters } from "vuex";
-import  {MangasBroker} from '@/js/MangasBroker.js';
 
 export default {
     data: function() {
@@ -18,21 +22,6 @@ export default {
         // ...mapGetters(["items"])
     },
     mounted() {
-        if(this.items){
-            let url="?id=";
-            url+=Object.keys(this.items).join('&id=');
-            let mangas = new MangasBroker();
-
-
-            Promise.resolve(mangas.getAll(url))
-            .then( (response) => {
-                console.log(response);
-            })
-            .catch ((e) => {
-                console.log(e.response.data);
-            });
-
-        }
 
     }
 }

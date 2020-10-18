@@ -10,12 +10,11 @@ export class AuthorsBroker extends BrokerCore {
     }
 
     async getById(id) {
-        console.log(id);
         return await this.APICommunicator.getRequest('/authors/'+id);
     }
 
-    async create(formDatas) {
-        return await this.APICommunicator.postRequest('/authors',formDatas)
+    async create(datas) {
+        return await this.APICommunicator.postRequest('/authors',datas)
     }
 
     async modify(id,objectData) {

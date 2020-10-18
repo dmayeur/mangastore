@@ -1,7 +1,7 @@
 <?php
 
 
-class MangaModel {
+class MangaModel extends CoreModel {
     private $db;
 
     public function __construct(){
@@ -25,5 +25,18 @@ class MangaModel {
         ";
 
         return $this->db->postQuery($query,[$serie, $volume, $releaseDate, $stock, $filename]);
+    }
+
+
+    function getAll($whereParameters){
+        $where = $this->transformParameters($whereParameters);
+
+        $query = "SELECT mangas.id, series.name, volume, image, price from mangas
+        LEFT JOIN series ON mangas.serie_id = series.id
+        LEFT JOIN prices on series.price_code = prices.code"
+        . $where['text'];
+
+        $results = $this->db->getQuery($query,$where['values']);
+        return $results;
     }
 }
