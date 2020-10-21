@@ -47,9 +47,10 @@ $extra-width: 1600px;
 }
 
 /* ===================================================
-    flex properties to display everything same size vertically
+    flex properties
 ================================================== */
 
+//The very basic flex properties everything should have
 @mixin basic-flex {
     display: flex;
     flex-flow: row wrap;

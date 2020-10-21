@@ -66,4 +66,20 @@ class Auth {
     public function decode($jwt) {
         return JWT::decode($jwt, $this->publicKey, ['RS256']);
     }
+
+    public function getUser($jwt) {
+        $object = $this->decode($jwt);
+        return $object->user;
+    }
+
+    public function headerToken() {
+        $header = apache_request_headers();
+
+        if(empty($header['token'])){
+            return false;
+        }
+
+        $object = $this->decode($header['token']);
+        return $object->user;
+    }
 }

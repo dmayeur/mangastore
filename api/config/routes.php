@@ -71,7 +71,12 @@ $router->delete('/authors/:id', [$authorController,"delete"]);
 /**
 *  USERS ROUTES
 */
+$router->get('users/series/:id/reviews', [$userController,"getReview"]);
+
 
 $router->post('/users/admin', [$userController, 'isAdmin']);
 $router->post('/users/creation', [$userController,'createAccount']);
 $router->post('/users/authentication', [$userController,'login']);
+
+
+$router->post('/orders', [$orderController,"create"]);

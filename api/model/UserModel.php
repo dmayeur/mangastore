@@ -22,6 +22,13 @@ class UserModel {
         return $this->db->getQueryOne($query,[$email]);
     }
 
+    public function getById($id){
+        $query = "SELECT username, email,  password, role, id FROM users
+                WHERE id = ?";
+
+        return $this->db->getQueryOne($query,[$id]);
+    }
+
     public function createAccount($values){
         $query = "INSERT INTO users (username, password, email, firstname, lastname, address, zip_code, city, created_at)
                 VALUES (?, ? ,?, ?, ?, ?, ?, ?, ?)

@@ -120,6 +120,7 @@ class SerieController extends CoreController{
         }
     }
 
+    
     public function create(){
         $body = $this->request->getBody();
 
@@ -149,7 +150,6 @@ class SerieController extends CoreController{
     }
 
     public function postReview($id) {
-
         $serie = $this->model->getById($id);
         if( !$serie ){
             throw new RestException("Aucune série correspondant à l'id",404);
@@ -160,13 +160,23 @@ class SerieController extends CoreController{
         }
 
         $auth = new Auth();
-        try {
-            $user = $auth->decode($_POST['token']);
 
+        try {
+            $user = $auth->getUser($_POST['token']);
         } catch (Exception $e) {
-            throw new RestException("Erreur mauvais token",401);
+            throw new RestException("Erreur avec le token",401);
         }
 
+        $userModel = new UserModel();
+        $user = $userModel->getById($user->id);
+
+        if(!$user) {
+            throw new RestException("L'utilisateur n'existe pas",404);
+        }
+
+        $reviewModel = new ReviewModel();
+
+        $reviewModel->create($id, $user->id, $_POST['content']);
     }
 
 

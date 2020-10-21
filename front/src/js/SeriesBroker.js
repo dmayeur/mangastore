@@ -25,6 +25,13 @@ export class SeriesBroker extends BrokerCore {
         return await this.APICommunicator.deleteRequest('/series/'+id)
     }
 
+    async createRating(id,datas) {
+        return await this.APICommunicator.postRequest('/series/'+id+'/reviews',datas)
+    }
+    async createReview(id,datas) {
+        return await this.APICommunicator.postRequest('/series/'+id+'/reviews',datas)
+    }
+
     getById(id){
         return this.APICommunicator.getRequest('/series/'+id+'/');
     }

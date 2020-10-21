@@ -17,7 +17,7 @@ composer install
 ```
 
 The server must accept htaccess redirections.
-You may need to change the configuration of the DB access in system/Database.php
+You may need to change the configuration of the DB access in **system/Database.php**
 
 ### In front folder
 
@@ -25,7 +25,7 @@ You may need to change the configuration of the DB access in system/Database.php
 npm install
 ```
 
-You may need to change vue.config.js proxy accordingly to your config (mine made with default xampp config)
+You may need to change **vue.config.js** proxy accordingly to your config (mine was made with default xampp config)
 
 ```
 npm run serve

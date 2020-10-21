@@ -4,6 +4,7 @@ class MangaController extends CoreController {
     protected $model;
     protected $request;
     protected $id=[];
+    protected $categories=[];
 
     //the default sorting
     protected $sort="series.name";
@@ -33,6 +34,8 @@ class MangaController extends CoreController {
                 case 'id':
                     $this->id[]=$value;
                     break;
+                case 'category';
+                    $this->categories[]=$value;
             }
         }
 
@@ -50,7 +53,6 @@ class MangaController extends CoreController {
     }
 
     public function getAll(){
-
         $results = $this->model->getAll($this->parametersToArrays());
 
         if($results) {

@@ -67,17 +67,11 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["isAuthenticated", "authStatus", "isAdmin","cartPrice","cartNbItems"]),
-        animatedPrice: function() {
-            return this.tweenedNumber.toFixed(0);
-        }
+        ...mapGetters(["isAuthenticated", "authStatus", "isAdmin","cartPrice","cartNbItems"])
     },
     watch: {
         '$route' (to) {
             document.title = to.meta.title + ' - MangaStore' || 'MangaStore'
-        },
-        cartPrice: function() {
-
         }
     },
     components: {

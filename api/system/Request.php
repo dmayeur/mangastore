@@ -16,6 +16,7 @@ class Request{
     }
 
     function request() {
+
         // this is for GET method only
         // we build it that way because we want the user to be able to call ?category=x&category=y so $_GET is no good
         $this->queryArray=[];
@@ -39,6 +40,16 @@ class Request{
         }
 
         $this->method=$method;
+    }
+
+    public function getJSON() {
+
+        if($_SERVER['CONTENT_TYPE'] == "application/json") {
+            return json_decode(file_get_contents('php://input'));
+        } else {
+            throw new RestException("Le serveur s'attend a une requête du type application/json",400);
+        }
+
     }
 
     public function getBody() {

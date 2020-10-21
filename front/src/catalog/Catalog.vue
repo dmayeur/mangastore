@@ -172,7 +172,7 @@ export default {
       content: "";
       flex: auto;
     }
-    
+
     li {
         display:flex;
         flex: 0 0 40%;

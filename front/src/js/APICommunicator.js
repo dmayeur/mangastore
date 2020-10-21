@@ -5,8 +5,12 @@ export class APICommunicator {
         this.urlApi = '/api'
     }
 
-    async getRequest(url){
-        return await axios.get(this.urlApi+url);
+    async getRequest(url, token = ""){
+        return await axios.get(this.urlApi+url, {
+            headers: {
+                'token': token
+            }
+        });
     }
 
     /**
@@ -31,6 +35,14 @@ export class APICommunicator {
         return await axios.post(this.urlApi+url,formData);
     }
 
+    async postRequestJSON(url,objectData){
+
+        return await axios.post(this.urlApi+url,objectData, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
     async deleteRequest(url){
         let formData = new FormData();
         formData.append('method','delete');
@@ -47,7 +59,7 @@ export class APICommunicator {
             }
         }
         formData.append('method','put');
-        
+
         return await axios.post(this.urlApi+url,formData);
     }
 }

@@ -153,4 +153,26 @@ class UserController extends CoreController{
         var_dump($auth->decode($_POST['token']));
     }
 
+
+    public function getReview($id){
+        $auth = new Auth();
+        try {
+            $user = $auth->headerToken();
+        } catch (Exception $e) {
+            throw new RestException("Erreur d'authentication",401);
+        }
+
+        $reviewModel = new ReviewModel();
+        $review = $reviewModel->getReview($id,$user->id);
+
+        if($review){
+
+        } else {
+            $this->sendResponse(404,[
+                "errorMessage" => 'Aucune critique trouvé.'
+            ]);
+        }
+    }
+
+
 }

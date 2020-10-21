@@ -119,7 +119,6 @@ p:first-of-type {
     }
 }
 
-//For the hover effects
 @media (hover: hover) {
     h2:hover a{
         color:green;

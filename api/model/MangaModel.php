@@ -31,7 +31,7 @@ class MangaModel extends CoreModel {
     function getAll($whereParameters){
         $where = $this->transformParameters($whereParameters);
 
-        $query = "SELECT mangas.id, series.name, volume, image, price from mangas
+        $query = "SELECT mangas.id, series.name as serie, volume, image, price from mangas
         LEFT JOIN series ON mangas.serie_id = series.id
         LEFT JOIN prices on series.price_code = prices.code"
         . $where['text'];
