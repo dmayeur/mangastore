@@ -1,5 +1,7 @@
 ![MangaStore Logo](/front/src/media/logo.png)
-
+<p align="center">
+  <img width="460" height="300" src="/front/src/media/logo.png">
+</p>
 # mangastore
 
 ## Description
