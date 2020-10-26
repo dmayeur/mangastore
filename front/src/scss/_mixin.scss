@@ -1,15 +1,32 @@
 @mixin input-field {
     display:block;
     width:100%;
-    margin: 0;
-    text-align:left;
+    border: 1px solid #a5a5a5;
+    border-radius: .25rem;
 
+    margin: 0;
+    padding: 1rem 0.5rem;
+
+    font-size: 1.5rem;
+    text-align:left;
     color: #333333;
-    &:focus{
+
+    transition: border-color .2s;
+
+    &:focus {
         outline:0;
         color: #000;
         border-color:$primary-color;
         box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25)
+    }
+}
+
+@mixin input-field-invalid {
+    border: 1px solid red;
+
+    &:focus {
+        border-color: red;
+        box-shadow: 0 0 0 0.2rem rgba(204,0,0,.25)
     }
 }
 

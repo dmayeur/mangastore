@@ -16,12 +16,15 @@ $router->get('/series/:id', [$serieController,"getById"]);
 $router->get('/admin/series', [$serieController,"getAllAdmin"]);
 
 $router->post('series',[$serieController,"create"]);
+$router->post('series/:id/categories',[$serieController,"createCategories"]);
 $router->post('series/:id/reviews', [$serieController,"postReview"]);
 $router->post('series/:id/mangas',[$serieController,"postManga"]);
+
 $router->put('series/:id',[$serieController,"modify"]);
+$router->put('series/:id/ratings', [$serieController,"putRating"]);
 
 $router->delete('series/:id', [$serieController,"delete"]);
-
+$router->delete('series/:id/categories', [$serieController, "deleteCategory"]);
 
 /**
 * MANGAS ROUTES

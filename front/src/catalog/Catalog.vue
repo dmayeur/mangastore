@@ -55,12 +55,14 @@ export default {
             editorsChecked: [],
             categories: [],
             categoriesChecked: [],
-            search: "",
             queryURL: "?sort=alphabetical",
             pages: 1,
             page: 1,
             loadingMangas: false
         }
+    },
+    props: {
+        // search: String
     },
     computed: {
 
@@ -98,7 +100,6 @@ export default {
         onInputChange: function(queryURL) {
             this.queryURL = queryURL;
             this.reloadMangas();
-
         },
         onPageChange: function(page) {
             this.page=page;
@@ -106,6 +107,7 @@ export default {
         }
     },
     mounted(){
+        console.log(this.search);
         //initializing the catalog
         let series = new SeriesBroker();
         Promise.resolve(series.getAll(""))
@@ -163,26 +165,11 @@ export default {
 
 
 .catalog-search--results {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-
-    //So it doesn't break the display
-    &:after {
-      content: "";
-      flex: auto;
-    }
-
-    li {
-        display:flex;
-        flex: 0 0 40%;
-        font-size: 2rem;
-        text-align: left;
-    }
+    @include articles;
 }
 
 .catalog-search--pages {
-    text-align: right;
+    margin-bottom: 20px;
     flex: 0 0 100%;
 }
 /* ===================================================

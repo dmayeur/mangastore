@@ -8,10 +8,8 @@
             <router-link to="/admin/series">Admin</router-link>
         </div>
         <section id="searchBar">
-            <form action="search.php">
-                <input type="search" name="search" placeholder="Votre recherche ici..."><!--
-                --><button type="submit"><i class="fas fa-search"></i></button>
-            </form>
+            <input type="search" name="search" placeholder="Votre recherche ici..." v-model="search"><!--
+            --><router-link to="/catalogue" :search="search"><button type="submit"><i class="fas fa-search"></i></button></router-link>
         </section>
         <nav>
             <ul>
@@ -24,9 +22,6 @@
 
     </header>
 
-    <!-- Invisible header only used to push content on desktop with fixed header -->
-    <div class="invisible-header">
-    </div>
 
     <div class="container">
         <router-view/>
@@ -52,7 +47,8 @@ export default {
         return {
                 id: this.$route.params.id,
                 serie: Object,
-                isModalVisible: false
+                isModalVisible: false,
+                search: ""
             };
     },
     methods: {
@@ -88,6 +84,7 @@ export default {
 /* ===================================================
                 GENERAL PROPERTIES
 ================================================== */
+//since this is not scoped all these properties will be useful for the whole app
 ul {
   list-style: none;
   padding:0;
@@ -187,24 +184,6 @@ nav ul {
     @extend %searchBar-element;
 }
 
-/* Sub nav
-================================================== */
-//this nav is less important so displayed at the bottom and 3 elements in a row
-#subNav {
-    margin-top: 20px;
-    padding:0 20px 15px;
-    display:flex;
-    justify-content:space-between;
-
-    li {
-        text-align: center;
-        width:33.33%;
-    }
-
-    .fas {
-        display:block;
-    }
-}
 
 
 .app-footer {
@@ -225,17 +204,12 @@ nav ul {
     }
 
 
-
     /* ===================================================
                         HEADER
     ================================================== */
     /* Header always stays on top
     ================================================== */
     .app-header {
-        position:fixed;
-        top:0;
-        z-index:2;
-
         display:flex;
         justify-content:center;
         align-items: center;
@@ -257,8 +231,9 @@ nav ul {
         .logo {
             width:33.33%;
             margin-left:50px;
+
             img {
-                width:10%;
+                width: 75px;
             }
         }
     }
@@ -271,10 +246,6 @@ nav ul {
             display:flex;
             justify-content: space-around;
         }
-    }
-
-    .invisible-header {
-        height:100px;
     }
 
 

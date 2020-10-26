@@ -52,14 +52,15 @@ class SerieModel extends CoreModel {
         ORDER BY volume DESC";
 
 
-        $query = "SELECT series.id as id, series.name as title, image, GROUP_CONCAT(DISTINCT authors.name SEPARATOR ', ') as author, price  FROM series
+        $query = "SELECT series.id as id, series.name as title, image, GROUP_CONCAT(DISTINCT authors.name SEPARATOR ', ') as author, price, avg(rating) as average_rating  FROM series
                   INNER JOIN
                   (
                       $queryLastMangas
                   ) m
                   ON m.serie_id = series.id
-                  INNER JOIN authors_series ON authors_series.serie_id = series.id
-                  INNER JOIN authors ON authors.id = authors_series.author_id
+                  LEFT JOIN reviews ON reviews.serie_id = series.id
+                  LEFT JOIN authors_series ON authors_series.serie_id = series.id
+                  LEFT JOIN authors ON authors.id = authors_series.author_id
                   LEFT JOIN prices on series.price_code = prices.code
                   LEFT JOIN series_categories ON series.id = series_categories.serie_id
                   LEFT JOIN categories ON categories.id = series_categories.category_id
@@ -108,7 +109,7 @@ class SerieModel extends CoreModel {
         return $this->db->getQueryOne($query, [$id]);
     }
 
-    public function create($name, $editor, $price){
+    public function create($name, $editor, $price) {
         $query = "INSERT INTO series (name, editor_id, price_code)
                  VALUES (?, ?, ?)
         ";
@@ -117,12 +118,19 @@ class SerieModel extends CoreModel {
     }
 
 
-    public function createCategory($serie, $category){
+    public function createCategory($serie, $category) {
         $query = "INSERT INTO series_categories (serie_id,category_id)
                  VALUES (?, ?)
         ";
 
         return $this->db->postQuery($query,[$serie, $category]);
+    }
+
+    public function deleteCategory($serie, $category) {
+        $query = "DELETE FROM series_categories
+                 WHERE serie_id = ? AND category_id = ?";
+
+        return $this->db->executeSQL($query, [$serie, $category]);
     }
 
     public function createAuthor($serie, $author){

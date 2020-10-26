@@ -17,9 +17,6 @@
                 <option v-for="price in prices" :key="price.code" :value="`${price.price_code}`">{{ price.price_code }} - {{ price.price }}€</option>
             </select>
         </div>
-        <div class="categories">
-            Liste des catégories: {{categoriesChecked}}
-        </div>
         <ul>
             <li v-for="category in categories" :key="category.id" class="catalog-search--item">
                 {{category.name}}

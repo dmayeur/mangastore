@@ -85,12 +85,21 @@ class SerieController extends CoreController{
 
     public function getById($id) {
         $serie = $this->model->getById($id);
-        if( !empty($serie) && $serie ){
+        if( $serie ){
             $mangaModel = new MangaModel();
             $serie['mangas'] = $mangaModel->getAllBySerie($id);
+            $categoryModel = new CategoryModel();
+            $serie['categories'] = $categoryModel->getAllBySerie($id);
+
+            $this->sendResponse(200, $serie);
+        } else {
+            $this->sendResponse(404, [
+                'errorMessage' => 'Série non trouvé'
+            ]);
         }
 
-        $this->checkResponse($serie);
+
+        // $this->checkResponse($serie);
     }
 
     public function getAllBasicInfos() {
@@ -120,7 +129,7 @@ class SerieController extends CoreController{
         }
     }
 
-    
+
     public function create(){
         $body = $this->request->getBody();
 
@@ -146,6 +155,19 @@ class SerieController extends CoreController{
             'id' => $serieId
         ]);
 
+
+    }
+
+    public function createCategories($id) {
+        $body = $this->request->getBody();
+        foreach ($body['categories'] as $category) {
+            $this->model->createCategory($id,$category);
+        }
+
+        $this->sendResponse(201,[
+            'message' => 'Création réussie',
+            'id' => $id
+        ]);
 
     }
 
@@ -176,11 +198,25 @@ class SerieController extends CoreController{
 
         $reviewModel = new ReviewModel();
 
-        $reviewModel->create($id, $user->id, $_POST['content']);
+        $result = $reviewModel->create($id, $user['id'], $_POST['rating']);
+        $this->sendResponse(201,[
+            'message' => 'Création de la note réussie',
+            'rating' => $_POST['rating']
+        ]);
     }
 
+    public function deleteCategory($id) {
+        $user = $this->getUser();
+        if($user['role']!='admin') {
 
-
+        }
+        $result = $this->model->deleteCategory($id, $_POST['category']);
+        if(!$result) {
+            throw new RestException('Erreur SQL',400);
+        } else {
+            $this->sendResponse(201,'Supression réussie');
+        }
+    }
 
     public function postManga($id) {
         $serie = $this->model->getById($id);
@@ -207,6 +243,40 @@ class SerieController extends CoreController{
         $mangaModel->createManga($id, $_POST['volume'], $_POST['releaseDate'],$_POST['stock'],$filename);
 
 
+    }
+
+    public function putRating($id) {
+        $serie = $this->model->getById($id);
+        if( !$serie ){
+            throw new RestException("Aucune série correspondant à l'id",404);
+        }
+
+        if( !isset($_POST['token']) ) {
+            throw new RestException("JWT token manquant.", 401);
+        }
+
+        $auth = new Auth();
+
+        try {
+            $user = $auth->getUser($_POST['token']);
+        } catch (Exception $e) {
+            throw new RestException("Erreur avec le token",401);
+        }
+
+        $userModel = new UserModel();
+        $user = $userModel->getById($user->id);
+
+        if(!$user) {
+            throw new RestException("L'utilisateur n'existe pas",404);
+        }
+
+        $reviewModel = new ReviewModel();
+
+        $result = $reviewModel->modifyRating($id, $user['id'], $_POST['rating']);
+        $this->sendResponse(201,[
+            'message' => 'Modification de la note réussie',
+            'rating' => $_POST['rating']
+        ]);
     }
 
     public function delete($id){

@@ -18,6 +18,17 @@ class CategoryModel {
 
     }
 
+    function getAllBySerie($id) {
+        $query = "SELECT id, name FROM categories
+                LEFT JOIN series_categories ON series_categories.category_id = categories.id
+                WHERE serie_id = ?
+        ;";
+
+        $results = $this->db->getQuery($query,[$id]);
+
+        return $results;
+    }
+
     function getAll() {
         //get the parents categories, IE the ones without any parent
         $query ="SELECT name, id FROM categories

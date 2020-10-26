@@ -1,3 +1,5 @@
+![MangaStore Logo](/front/src/media/logo.png)
+
 # mangastore
 
 ## Description
@@ -37,7 +39,9 @@ And you can finally access to the site
 
 ### Front
 
-I made everything with Vue.js
+I made everything with Vue.js.
+
+Form validators are made here and not in the back for better feedback and UX.
 
 The connection with the back is made with API calls with Axios.
 

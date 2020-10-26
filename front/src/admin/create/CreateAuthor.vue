@@ -5,10 +5,10 @@
             <label for="author">Nom de l'auteur: </label>
             <input type="text" name="author" id="author" v-model="author">
         </div>
-        <Button v-if="edit">
+        <Button v-if="edit" type="submit">
             Modifier l'auteur
         </Button>
-        <Button v-else>
+        <Button v-else type="submit">
             Créer l'auteur
         </Button>
     </form>

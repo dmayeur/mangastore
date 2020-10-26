@@ -1,19 +1,28 @@
 <template lang="html">
-  <article>
-      <router-link :to="`/serie/${manga.id}/`"><img :src="getImgPath(manga.image)" :alt="`Couverture de ${manga.title}`"></router-link>
-      <h2><router-link :to="`/serie/${manga.id}/`">{{manga.title}}</router-link></h2>
-      <p>{{manga.author}}</p>
-      <div>
-          <div class="rating">
-              <i class="far fa-star"></i>
-              <i class="far fa-star"></i>
-              <i class="far fa-star"></i>
-              <i class="far fa-star"></i>
-              <i class="far fa-star"></i>
-          </div>
-          <span class="price">{{manga.price}}€</span>
-      </div>
-  </article>
+<article>
+    <router-link :to="`/serie/${manga.id}/`"><img :src="getImgPath(manga.image)" :alt="`Couverture de ${manga.title}`"></router-link>
+    <h2><router-link :to="`/serie/${manga.id}/`">{{manga.title}}</router-link></h2>
+    <p>{{manga.author}}</p>
+    <div>
+        <div class="rating" v-if="manga.average_rating" :title="'Note: ' + parseFloat(manga.average_rating).toFixed(2)  + '/5'">
+            <div class="rating-upper" :style="{width: manga.average_rating/5*100 + '%'}">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="rating-lower">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+        </div>
+        <span class="price">{{manga.price}}€</span>
+    </div>
+</article>
 </template>
 
 <script>
@@ -36,6 +45,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 
 //main properties
 article{
@@ -115,8 +125,20 @@ p:first-of-type {
     }
 
     .rating {
-        display:inline;
+        display:inline-block;
+        position:relative;
     }
+
+    .rating-upper {
+        display: flex;
+        z-index: 2;
+        position: absolute;
+        top: 0;
+        left: 0;
+        color:orange;
+        overflow: hidden;
+    }
+
 }
 
 @media (hover: hover) {

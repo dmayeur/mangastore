@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
+import Catalog from '../catalog/Catalog.vue'
 
 const routes = [
   {
@@ -25,7 +26,9 @@ const routes = [
       meta: {
         title: 'Catalogue'
       },
-      component: () => import('../catalog/Catalog.vue')
+      // component: () => import('../catalog/Catalog.vue')
+      component: Catalog,
+      props: route => ({search: route.query.search})
 },
 {
     path: '/serie/:id',
@@ -110,6 +113,14 @@ const routes = [
       title: 'Admin - Categories'
     },
     component: () => import('../admin/Admin.vue')
+},
+{
+    path: '/admin/categories/create',
+    name: 'AdminCategoriesCreate',
+    meta: {
+      title: 'Admin - Categories'
+    },
+    component: () => import('../admin/create/CreateCategory.vue')
 },
 {
     path: '/admin/auteurs',

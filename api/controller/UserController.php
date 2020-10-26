@@ -166,7 +166,7 @@ class UserController extends CoreController{
         $review = $reviewModel->getReview($id,$user->id);
 
         if($review){
-
+            $this->sendResponse(200, $review);
         } else {
             $this->sendResponse(404,[
                 "errorMessage" => 'Aucune critique trouvé.'

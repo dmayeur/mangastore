@@ -45,7 +45,7 @@
                         </Notice>
                         <router-link to="/inscription" @click="close">Pas de compte? Créer en un.</router-link>
                         <div class='button-container'>
-                            <Button @submit.prevent="login">Connexion</Button>
+                            <Button type="submit">Connexion</Button>
                         </div>
                     </form>
                 </section>

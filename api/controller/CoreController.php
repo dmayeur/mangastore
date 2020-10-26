@@ -97,7 +97,28 @@ class CoreController{
     }
 
 
+    public function getUser(){
+        if( !isset($_POST['token']) ) {
+            throw new RestException("JWT token manquant.", 401);
+        }
 
+        $auth = new Auth();
+
+        try {
+            $user = $auth->getUser($_POST['token']);
+        } catch (Exception $e) {
+            throw new RestException("Erreur avec le token",401);
+        }
+
+        $userModel = new UserModel();
+        $user = $userModel->getById($user->id);
+
+        if(!$user) {
+            throw new RestException("L'utilisateur n'existe pas",404);
+        }
+
+        return $user;
+    }
 
     /**
      * [checkResponse check is the response is empty or not and send it with the appropriate header]

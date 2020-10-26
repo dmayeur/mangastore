@@ -20,7 +20,6 @@ export class APICommunicator {
      * @return {Promise}            [description]
      */
     async postRequest(url,objectData){
-
         //we do the conversion to formdata here so if we ever change the way the app communicates with the back we only change it here
         let formData = new FormData();
 
@@ -31,7 +30,7 @@ export class APICommunicator {
                 formData.append(key, objectData[key]);
             }
         }
-
+        
         return await axios.post(this.urlApi+url,formData);
     }
 
@@ -43,9 +42,18 @@ export class APICommunicator {
             }
         });
     }
-    async deleteRequest(url){
+
+    async deleteRequest(url,objectData = []){
+
         let formData = new FormData();
         formData.append('method','delete');
+        for ( let key in objectData ) {
+            if(Array.isArray(objectData[key])){
+                formData.append(key+"[]", objectData[key]);
+            } else {
+                formData.append(key, objectData[key]);
+            }
+        }
         return await axios.post(this.urlApi+url,formData);
     }
 

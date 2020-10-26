@@ -5,21 +5,19 @@
             <tr>
                 <th>Image</th>
                 <th>Série</th>
-                <th>Volume</th>
-                <th>Quantité</th>
-                <th>Prix unitaire</th>
-                <th>Total</th>
+                <th>Prix</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="item of items" :key="item.id">
+            <tr v-for="(item, index) of items" :key="item.id">
                 <td><img :src="getImgPath(item.image)" :alt="`Couverture de ${item.title}`"></td>
-                <td>{{ item.serie }}</td>
-                <td>{{ item.volume }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.price }}€</td>
+                <td>{{ item.serie }} vol {{ item.volume }}</td>
                 <td>{{ item.total }}€</td>
+                <td>
+                    <input type="number" v-model=item.quantity @change="quantityChange(index)">
+                    <i class="fas fa-trash"></i>
+                </td>
             </tr>
         </tbody>
         <tfoot>
@@ -74,9 +72,12 @@ export default {
             let items = Object.values(this.$store.getters.items);
             Promise.resolve(orders.order(items))
         },
+        quantityChange(index) {
+            this.items[index].total = (this.items[index].price * this.items[index].quantity).toFixed(2)
+        },
         ...mapGetters(["isAuthenticated"])
     },
-    mounted() {
+    created() {
         let items = this.$store.getters.items;
         if(items){
             let total = 0;
@@ -97,15 +98,23 @@ export default {
             .catch ((e) => {
                 console.log(e);
             });
-
+                
         }
     }
 }
 </script>
 
 <style lang="scss" scoped>
+table {
+    width: 100%;
+}
+
 img {
     max-width:100px;
+}
+
+td, th {
+    text-align: center;
 }
 
 </style>

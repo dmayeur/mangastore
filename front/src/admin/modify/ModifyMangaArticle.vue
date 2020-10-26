@@ -35,5 +35,8 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="scss" scoped>
+img {
+    max-width:15%;
+}
 </style>

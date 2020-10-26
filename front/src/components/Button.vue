@@ -1,13 +1,20 @@
 <template lang="html">
-    <button>
+    <button :type="type">
         <slot>
             Button
         </slot>
     </button>
+
 </template>
 
 <script>
 export default {
+    props: {
+        type: {
+            default: "button",
+            type: String
+        }
+    }
 }
 </script>
 
