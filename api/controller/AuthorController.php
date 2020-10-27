@@ -2,15 +2,13 @@
 
 class AuthorController extends CoreController{
     protected $model;
-    protected $request;
-    protected $author;
 
-    public function __construct($request) {
-        $this->request = $request;
+    public function __construct() {
         $this->model = new AuthorModel();
     }
 
     public function getAll() {
+
         $results = $this->model->getAll();
         if($results) {
             $this->sendResponse(200, $results);
@@ -19,9 +17,11 @@ class AuthorController extends CoreController{
                 'errorMessage' => 'Aucun résultat'
             ]);
         }
+
     }
 
     public function getById($id) {
+
         $results = $this->model->getById((int) $id);
         if($results) {
             $this->sendResponse(200, $results);
@@ -30,9 +30,11 @@ class AuthorController extends CoreController{
                 'errorMessage' => 'Aucun résultat'
             ]);
         }
+        
     }
 
     public function bodyRequestToParameters($body){
+
         foreach ($body as $key => $value) {
             switch ($key) {
                 case 'author':
@@ -40,23 +42,24 @@ class AuthorController extends CoreController{
                     break;
             }
         }
+
     }
 
-    public function create() {
-        $this->bodyRequestToParameters($this->request->getBody());
+    public function create($body) {
 
-        $result = $this->model->create($this->author);
+        $result = $this->model->create($body['author']);
         if(!$result) {
             throw new RestException('Erreur SQL',400);
         } else {
             $this->sendResponse(201,$result);
         }
+
     }
 
-    public function modify($id) {
-        $this->bodyRequestToParameters($this->request->getBody());
+    public function modify($id, $body) {
 
-        $result = $this->model->modify($this->author,(int) $id);
+
+        $result = $this->model->modify($body['author'], (int) $id);
         if(!$result) {
             throw new RestException('Erreur SQL',400);
         } else {

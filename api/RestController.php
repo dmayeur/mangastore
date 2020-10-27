@@ -1,31 +1,4 @@
 <?php
-// var_dump($_POST);
-// exit();
-
-function customException($e)
-{
-    //it's either an error we threw ourselves
-    if($e instanceof RestException){
-        $coreController = new CoreController();
-        $coreController->setHttpHeaders($e->getCode());
-        $error = [
-            'errorMessage' => $e->getMessage(),
-        ];
-    //or an unplanned one
-    } else {
-        $coreController = new CoreController();
-        $coreController->setHttpHeaders('500');
-        $error = [
-            'message' => $e->getMessage(),
-            'line' => $e->getLine(),
-            'file' => $e->getFile()
-        ];
-    }
-    $error =  json_encode($error, JSON_FORCE_OBJECT);
-    echo($error);
-    exit();
-}
-
 include 'vendor/autoload.php';
 
 spl_autoload_register(function ($class) {
@@ -38,22 +11,24 @@ spl_autoload_register(function ($class) {
     }
 });
 
+set_exception_handler('RestException::customException');
+
 // we create a request object that contains all the request info
 $request = new Request();
 
 // we instantiate all the controllers because I didn't find any other way to have objects with my router
-$serieController = new SerieController($request);
-$categoryController = new CategoryController($request);
-$editorController = new EditorController($request);
-$userController = new UserController($request);
-$authorController = new AuthorController($request);
-$mangaController = new MangaController($request);
-$orderController = new OrderController($request);
+$serieController = new SerieController();
+$categoryController = new CategoryController();
+$editorController = new EditorController();
+$userController = new UserController();
+$authorController = new AuthorController();
+$mangaController = new MangaController();
+$orderController = new OrderController();
 
 //the routes of our router
 include 'config/routes.php';
 
-set_exception_handler('customException');
+
 
 //special rule for our vue front server
 header("Access-Control-Allow-Origin: http://localhost:80");
@@ -61,4 +36,5 @@ header("Access-Control-Allow-Origin: http://localhost:80");
 
 //Match the URL to a route
 $router->run();
+
 exit();

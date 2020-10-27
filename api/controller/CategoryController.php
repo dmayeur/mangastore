@@ -2,10 +2,8 @@
 
 class CategoryController extends CoreController{
     protected $model;
-    protected $request;
 
-    public function __construct($request) {
-        $this->request = $request;
+    public function __construct() {
         $this->model = new CategoryModel();
     }
 
@@ -20,4 +18,8 @@ class CategoryController extends CoreController{
         $this->checkResponse($results);
     }
 
+    public function create($body) {
+        var_dump($body);
+        exit();
+    }
 }

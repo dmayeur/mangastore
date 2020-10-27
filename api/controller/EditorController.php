@@ -4,9 +4,8 @@ class EditorController extends CoreController{
     protected $model;
     protected $request;
 
-    public function __construct($request) {
+    public function __construct() {
         $this->model = new EditorModel();
-        $this->request = $request;
     }
 
     public function getById($id) {
@@ -23,12 +22,14 @@ class EditorController extends CoreController{
         $this->checkResponse($results);
     }
 
-    public function create($id) {
-        if(isset($_POST['editor'])){
+    public function create($id, $body) {
+
+        if(!isset($body['editor'])){
             throw new RestException('Paramètre manquant',400);
         }
 
-        $result = $this->model->create($_POST['editor']);
+        $result = $this->model->create($body['editor']);
+
         if(!$result) {
             throw new RestException('Erreur SQL',400);
         } else {

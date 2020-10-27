@@ -7,10 +7,7 @@ class Router {
 
     public function __construct($url){
         $this->url = $url;
-        $this->method = $_SERVER['REQUEST_METHOD'];
-        if(isset($_POST['method'])){
-            $this->method = strtoupper($_POST['method']);
-        }
+
     }
 
     public function get($path, $callable){
@@ -32,18 +29,18 @@ class Router {
     private function add($path, $callable, $method){
         $route = new Route($path, $callable);
         $this->routes[$method][] = $route;
-        if(is_string($callable)){
-            $name = $callable;
-        }
         return $route;
     }
 
     public function run(){
-        if(!isset($this->routes[$this->method])){
+        $request = new Request();
+
+        if(!isset($this->routes[$request->getMethod()])){
             throw new RestException('REQUEST_METHOD does not exist',400);
         }
-        foreach($this->routes[$this->method] as $route){
-            if($route->match($this->url)){
+
+        foreach($this->routes[$request->getMethod()] as $route){
+            if($route->match($this->url,$request->getRequest())){
                 return $route->call();
             }
         }

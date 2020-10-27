@@ -10,13 +10,9 @@ class MangaController extends CoreController {
     protected $sort="series.name";
 
 
-    public function __construct($request) {
-        $this->request = $request;
+    public function __construct() {
         $this->model = new MangaModel();
 
-        if($request->getMethod()=='GET'){
-            $this->queryToParameters($request->getBody());
-        }
     }
 
     public function queryToParameters($queryURL) {

@@ -13,13 +13,12 @@ class SerieController extends CoreController{
     protected $sort="series.name";
 
 
-    public function __construct($request) {
-        $this->request = $request;
+    public function __construct() {
         $this->model = new SerieModel();
 
-        if($request->getMethod()=='GET'){
-            $this->queryToParameters($request->getBody());
-        }
+        // if($request->getMethod()=='GET'){
+        //     $this->queryToParameters($request->getBody());
+        // }
     }
 
     public function queryToParameters($queryURL) {
@@ -84,30 +83,31 @@ class SerieController extends CoreController{
     }
 
     public function getById($id) {
+
         $serie = $this->model->getById($id);
         if( $serie ){
             $mangaModel = new MangaModel();
             $serie['mangas'] = $mangaModel->getAllBySerie($id);
             $categoryModel = new CategoryModel();
             $serie['categories'] = $categoryModel->getAllBySerie($id);
-
+            $authorModel = new AuthorModel();
+            $serie['authors'] = $authorModel->getAllBySerie($id);
             $this->sendResponse(200, $serie);
         } else {
             $this->sendResponse(404, [
                 'errorMessage' => 'Série non trouvé'
             ]);
         }
-
-
-        // $this->checkResponse($serie);
     }
 
-    public function getAllBasicInfos() {
-        $results = $this->model->getAllBasicInfos($this->parametersToArrays(),$this->sort,$this->search,$this->page);
+    public function getAllBasicInfos($request) {
+        $this->queryToParameters($request);
+        $whereQuery = $this->parametersToArrays();
+        $results = $this->model->getAllBasicInfos($whereQuery, $this->sort, $this->search, $this->page);
 
         if($results) {
             $response['data']=$results;
-            $nbResults = $this->model->getAllPages($this->parametersToArrays(),$this->sort,$this->search);
+            $nbResults = $this->model->getAllPages($whereQuery, $this->sort, $this->search);
             $response['nb_results']=$nbResults['nb_results'];
             $response['pages']=ceil($nbResults['nb_results']/15);
             $this->sendResponse(200, $response);
@@ -130,14 +130,14 @@ class SerieController extends CoreController{
     }
 
 
-    public function create(){
-        $body = $this->request->getBody();
+    public function create($body){
 
         if (empty($body['name']) || empty($body['categories'][0]) || empty($body['editor']) || empty($body['price']) || empty($body['authors'][0]) ){
             throw new RestException('Paramètres manquants',401);
         }
 
         $serieId = $this->model->create($body['name'],$body['editor'],$body['price']);
+
         if(!$serieId){
             throw new RestException("Erreur",400);
         }
@@ -146,7 +146,7 @@ class SerieController extends CoreController{
             $this->model->createCategory($serieId,$category);
         }
 
-        foreach($body['authors'] as $author) {
+        foreach ($body['authors'] as $author) {
             $this->model->createAuthor($serieId,$author);
         }
 
@@ -158,8 +158,7 @@ class SerieController extends CoreController{
 
     }
 
-    public function createCategories($id) {
-        $body = $this->request->getBody();
+    public function createCategories($id, $body) {
         foreach ($body['categories'] as $category) {
             $this->model->createCategory($id,$category);
         }

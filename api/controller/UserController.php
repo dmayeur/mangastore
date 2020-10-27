@@ -17,14 +17,8 @@ class UserController extends CoreController{
     protected $city = null;
 
 
-    public function __construct($request) {
-
-        $this->request = $request;
+    public function __construct() {
         $this->model = new UserModel();
-
-
-        $this->bodyRequestToParameters($this->request->getBody());
-
     }
 
 
@@ -61,7 +55,8 @@ class UserController extends CoreController{
         $serie = $this->model->getByUsername($id);
     }
 
-    public function createAccount() {
+    public function createAccount($body) {
+        $this->bodyRequestToParameters($body);
 
         $user = $this->model->getByEmail($this->email);
 
@@ -104,7 +99,9 @@ class UserController extends CoreController{
         $this->model->createAccount($account);
     }
 
-    public function login() {
+    public function login($body) {
+        $this->bodyRequestToParameters($body);
+
         $user = $this->model->getByEmail($this->login);
         if(!$user) {
             $user = $this->model->getByUsername($this->login);
@@ -143,14 +140,14 @@ class UserController extends CoreController{
         }
     }
 
-    public function isAdmin() {
-        if(!isset($_POST['token'])) {
+    public function isAdmin($body) {
+        if(!isset($body['token'])) {
             throw new RestException('Token manquant',401);
         }
 
         $auth = new Auth();
 
-        var_dump($auth->decode($_POST['token']));
+        var_dump($auth->decode($body['token']));
     }
 
 

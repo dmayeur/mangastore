@@ -17,6 +17,17 @@ class AuthorModel {
         return $results;
     }
 
+    function getAllBySerie($id) {
+        $query = "SELECT id, name FROM authors
+                LEFT JOIN authors_series ON authors_series.author_id = authors.id
+                WHERE serie_id = ?
+        ;";
+
+        $results = $this->db->getQuery($query,[$id]);
+
+        return $results;
+    }
+
     function getById($id){
         $query ="SELECT id, name FROM authors
                 WHERE id = ?
