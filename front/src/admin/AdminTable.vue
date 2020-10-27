@@ -79,5 +79,13 @@ table {
     td, th {
         padding: 5px;
     }
+
+    .fa-trash-alt {
+        @include red-icon;
+    }
+
+    .fa-pen-fancy {
+        @include green-icon;
+    }
 }
 </style>

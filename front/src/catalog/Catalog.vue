@@ -88,13 +88,14 @@ export default {
                 this.pages = response.data.pages;
 
             })
-            .catch ((e) => {
-                if(e.response.data.errorMessage) {
-                    this.errorMessage = e.response.data.errorMessage
+            .catch ((error) => {
+                if(error.response.data.errorMessage) {
+                    this.errorMessage = error.response.data.errorMessage
                 }
-                this.pages = 0;
-                this.mangas = [];
+                this.pages = 1;
                 this.loadingMangas = false;
+                this.mangas = [];
+
             });
         },
         onInputChange: function(queryURL) {
@@ -107,7 +108,6 @@ export default {
         }
     },
     mounted(){
-        console.log(this.search);
         //initializing the catalog
         let series = new SeriesBroker();
         Promise.resolve(series.getAll(""))

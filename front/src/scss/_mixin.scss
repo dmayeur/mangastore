@@ -103,3 +103,23 @@ $extra-width: 1600px;
 
     margin-bottom:20px;
 }
+
+@mixin icon($color1, $color2) {
+    padding:10px;
+    font-size:2rem;
+    border-radius: 0.5rem;
+
+    background-color: $color1;
+
+    color:$color2;
+    border: 1px solid $color2;
+}
+
+@mixin red-icon {
+    @include icon( #F8D7DA, #ad5a61);
+
+}
+
+@mixin green-icon {
+    @include icon( #5edb79, #419253);
+}

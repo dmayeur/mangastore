@@ -3,31 +3,49 @@
     <h1>{{serie.title}}</h1>
     <p>Nombre de volumes: {{serie.nbVolumes}}</p>
 
-    <section class="mangas-add">
+    <section class="serie-mangas-add">
         <h2>Ajouter un volume</h2>
         <form method="post" enctype="multipart/form-data">
             <p>Volume n°{{ mangaToAdd.volume }} à ajouter</p>
-            <input type="date" v-model="mangaToAdd.releaseDate">
-            <input type="number" v-model="mangaToAdd.stock">
-            <input type="file" @change="processFile($event)">
+            <div class="input-item">
+                <label for="release-date">Date de sortie: </label>
+                <input type="date" id="release-date" v-model="mangaToAdd.releaseDate">
+            </div>
+            <div class="input-item">
+
+            </div>
+            <div class="input-item">
+                <label for="stock">Stock: </label>
+                <input type="number" id="stock" v-model="mangaToAdd.stock">
+            </div>
+            <div class="input-item">
+                <label for="cover">Couverture du tome: </label>
+                <input type="file" id="cover" @change="processFile($event)">
+            </div>
 
             <Button @click.prevent="addManga">Ajouter le volume</Button>
         </form>
     </section>
 
-    <section class="mangas-modify">
+    <section class="serie-mangas-modify">
         <h2>Modifier un volume</h2>
         <form method="post" v-for="manga in serie.mangas" :key="manga.id">
             <article>
                 <img :src="getImgPath(manga.image)" :alt="`Couverture de ${manga.title}`">
                 <p>Volume {{manga.volume}}</p>
-                <label for="cover">Couverture du manga:</label>
-                <input type="file" name="cover">
-                <label for="releaseDate">Date de sortie</label>
-                <input type="date" name="releaseDate" :value="manga.release_date">
-                <label for="stock">Stock:</label>
-                <input type="number" name="stock" :value="manga.stock">
-                <Button>
+                <div class="input-item">
+                    <label for="cover">Couverture du manga:</label>
+                    <input type="file" name="cover">
+                </div>
+                <div class="input-item">
+                    <label for="releaseDate">Date de sortie</label>
+                    <input type="date" name="releaseDate" :value="manga.release_date">
+                </div>
+                <div class="input-item">
+                    <label for="stock">Stock:</label>
+                    <input type="number" name="stock" :value="manga.stock">
+                </div>
+                <Button @click="test">
                     Editer le volume
                 </Button>
             </article>
@@ -35,7 +53,7 @@
     </section>
 
 
-    <section>
+    <section class="serie-categories">
         <h2>Catégories actuelles: </h2>
         <ul>
             <li v-for="(category, index) in serie.categories" :key="category.id">
@@ -44,7 +62,7 @@
         </ul>
     </section>
 
-    <section class="mangas-modify-categories">
+    <section class="serie-categories-add">
         <h2>Catégories à ajouter:</h2>
         <ul>
             <li v-for="category in categories" :key="category.id" class="catalog-search--item">
@@ -62,13 +80,31 @@
         </Button>
     </section>
 
+    <section class="serie-authors">
+        <h2>Auteurs actuels: </h2>
+        <ul>
+            <li v-for="(author, index) in serie.authors" :key="author.id">
+                {{author.name}} <i class="fas fa-trash" @click="deleteAuthor(index)"></i>
+            </li>
+        </ul>
+    </section>
 
+    <section class="serie-authors-add">
+        <h2>Ajouter un auteur</h2>
+        <div class="input-item">
+            <label for="author">Auteur: </label>
+            <select name="author" id="author" v-model="author">
+                <option v-for="author in authors" :key="author.id" :value="`${author.id}`">{{ author.name }}</option>
+            </select>
+        </div>
+    </section>
 </div>
 </template>
 
 <script>
 import  {SeriesBroker} from '@/js/SeriesBroker.js';
 import  {CategoriesBroker} from '@/js/CategoriesBroker.js';
+import  {AuthorsBroker} from '@/js/AuthorsBroker.js';
 
 import Button from '@/components/Button.vue';
 
@@ -76,10 +112,11 @@ export default {
     data: function() {
         return {
             serie: {},
-            mangasAddNumber: 0,
             mangaToAdd: {},
             categories: {},
-            categoriesChecked: []
+            categoriesChecked: [],
+            authors: {},
+            author: ""
         }
     },
     components: {
@@ -91,7 +128,6 @@ export default {
         },
         addManga() {
             let series = new SeriesBroker();
-            console.log(this.mangaToAdd);
             Promise.resolve(series.createManga(this.$route.params.id,this.mangaToAdd))
             .then( (response) => {
                 console.log(response);
@@ -158,6 +194,18 @@ export default {
         .catch (() => {
             this.categories = [];
         });
+
+        let authors = new AuthorsBroker();
+        Promise.resolve(authors.getAll())
+        .then( (response) => {
+            this.authors=response.data;
+            this.author = response.data[0].id;
+        })
+        .catch ((e) => {
+            if(e.response.data.errorMessage) {
+                this.errorMessage = e.response.data.errorMessage
+            }
+        });
     }
 }
 </script>
@@ -167,6 +215,7 @@ export default {
 section {
     border-bottom: 2px solid $primary-color;
     padding-bottom: 20px;
+    overflow:hidden;
 }
 
 img {
@@ -174,13 +223,19 @@ img {
     height:300px;
 }
 
+.input-item {
+    margin-bottom: 10px;
+}
+
 .fas {
-    background-color: #F8D7DA;
-    padding:10px;
-    font-size:2rem;
-    color:#ad5a61;
-    border: 1px solid #ad5a61;
-    border-radius: 0.5rem;
+    @include red-icon
+}
+
+@include tablet {
+    img{
+        float:left;
+        margin-right: 20px;
+    }
 
 }
 </style>

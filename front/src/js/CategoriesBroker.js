@@ -17,8 +17,8 @@ export class CategoriesBroker extends BrokerCore {
         return await this.APICommunicator.getRequest('/admin/categories');
     }
 
-    async create(){
-        return await this.APICommunicator.postRequest('/categories');
+    async create(data){
+        return await this.APICommunicator.postRequest('/categories',data);
     }
 
 }

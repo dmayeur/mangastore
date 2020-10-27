@@ -12,11 +12,11 @@
                 <option v-for="category in categories" :key="category.name" :value="category.id"> {{category.name}} </option>
             </select>
         </div>
-        <Button v-if="edit">
-            Modifier l'éditeur
+        <Button type="submit" v-if="edit">
+            Modifier la catégorie
         </Button>
-        <Button v-else>
-            Créer l'éditeur
+        <Button type="submit" v-else>
+            Créer la catégorie
         </Button>
     </form>
 </div>
@@ -31,7 +31,7 @@ export default {
         return {
             category: "",
             categories: {},
-            categoryParent: "Aucune",
+            categoryParent: -1,
             edit: false
         }
     },
@@ -40,10 +40,15 @@ export default {
     },
     methods: {
         onSubmit() {
+            let category = {category: this.category};
+            if (this.categoryParent != -1){
+                category.categoryParent = this.categoryParent
+            }
+
             let categories = new CategoriesBroker();
             if(this.edit){
-                Promise.resolve(categories.modify(this.$route.params.id,{category: this.category})).then ( () => {
-                    this.$router.go(-1);
+                Promise.resolve(categories.modify(this.$route.params.id,category)).then ( () => {
+                    // this.$router.go(-1);
                 })
                 .catch ((e) => {
                     if(e.response.data.errorMessage) {
@@ -51,14 +56,14 @@ export default {
                     }
                 });
             } else {
-                Promise.resolve(categories.create({category: this.category})).then( () => {
-                    this.$router.go(-1);
+                Promise.resolve(categories.create(category)).then( () => {
+                    // this.$router.go(-1);
                 })
                 .catch ((e) => {
                     if(e.response.data.errorMessage) {
                         this.errorMessage = e.response.data.errorMessage
                     }
-                });
+                })
             }
 
         }

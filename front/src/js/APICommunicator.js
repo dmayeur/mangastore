@@ -1,12 +1,12 @@
-import axios from 'axios'
-
+// import instance from 'instance'
+import instance from './axiosAPI.js';
 export class APICommunicator {
     constructor(){
-        this.urlApi = '/api'
+        // this.urlApi = '/api'
     }
 
     async getRequest(url, token = ""){
-        return await axios.get(this.urlApi+url, {
+        return await instance.get(url, {
             headers: {
                 'token': token
             }
@@ -30,13 +30,13 @@ export class APICommunicator {
                 formData.append(key, objectData[key]);
             }
         }
-        
-        return await axios.post(this.urlApi+url,formData);
+
+        return await instance.post(url,formData);
     }
 
     async postRequestJSON(url,objectData){
 
-        return await axios.post(this.urlApi+url,objectData, {
+        return await instance.post(url,objectData, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -54,7 +54,7 @@ export class APICommunicator {
                 formData.append(key, objectData[key]);
             }
         }
-        return await axios.post(this.urlApi+url,formData);
+        return await instance.post(url,formData);
     }
 
     async putRequest(url,objectData){
@@ -68,6 +68,6 @@ export class APICommunicator {
         }
         formData.append('method','put');
 
-        return await axios.post(this.urlApi+url,formData);
+        return await instance.post(url,formData);
     }
 }
