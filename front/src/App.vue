@@ -5,7 +5,7 @@
             <router-link to="/"><img src="./media/logo.png" /></router-link>
         </div>
         <div class="admin" v-if="isAdmin">
-            <router-link to="/admin/series">Admin</router-link>
+            <router-link to="/admin/series"><i class="fas fa-tools"></i>Admin</router-link>
         </div>
         <section id="searchBar">
             <input type="search" name="search" placeholder="Votre recherche ici..." v-model="search"><!--
@@ -24,12 +24,17 @@
 
 
     <div class="container">
-        <router-view/>
+        <router-view :search="search"/>
     </div>
 
 
-    <footer class="app-footer">
-        test
+    <footer>
+        <nav>
+            <ul>
+                <li><router-link to="/contact">Contact</router-link></li>
+                <li><router-link to="/about">A propos</router-link></li>
+            </ul>
+        </nav>
     </footer>
 
     <LoginModal v-show="isModalVisible" @close="closeModal">
@@ -48,7 +53,8 @@ export default {
                 id: this.$route.params.id,
                 serie: Object,
                 isModalVisible: false,
-                search: ""
+                search: "",
+                currentPage: ""
             };
     },
     methods: {
@@ -68,6 +74,7 @@ export default {
     watch: {
         '$route' (to) {
             document.title = to.meta.title + ' - MangaStore' || 'MangaStore'
+            this.currentPage = to.name;
         }
     },
     components: {
@@ -81,6 +88,7 @@ export default {
 
 
 <style lang="scss">
+
 /* ===================================================
                 GENERAL PROPERTIES
 ================================================== */
@@ -112,10 +120,14 @@ a {
 }
 
 body {
-    font-family: $main-font ;
+    font-family: $main-font;
     font-size: 1.6rem;
     text-align: center;
     background-color: $secondary-color;
+}
+
+h1, h2, h3, nav ul li a {
+    font-family: $title-font;
 }
 
 /* ===================================================
@@ -127,6 +139,9 @@ body {
 
     img {
         max-width: 50%;
+        //so it doesn't look too big on vertical tablets
+        max-height: 150px;
+
         margin: 15px auto;
     }
 
@@ -134,33 +149,51 @@ body {
         padding:20px;
     }
 
-    nav {
-        font-size:2rem;
-    }
-
-    a {
-        color: $primary-color-text;
-    }
-
-
-
 }
 
-/* Quick nav
-================================================== */
-//the more important nav
-nav ul {
+
+nav ul li a {
+    color: $primary-color-text;
+    font-size:1.8rem;
+    display: block;
+    padding: 15px;
+
+    margin: 0 10px;
+    position: relative;
+}
+
+nav ul li a:after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 0%;
+    content: '.';
+    color: transparent;
+    background: #fff;
+    height: 2px;
+}
+
+nav ul li {
     text-align: center;
+
     .fas {
         display:block;
-        margin-top:20px;
+        margin-top: 20px;
+        margin-bottom: 5px;
     }
 }
+
+nav ul li a.selected:after {
+    width: 100%;
+}
+
+
 /* Search bar
 ================================================== */
 
 #searchBar {
-    // padding:0 10px;
     display:flex;
     justify-content: center;
 }
@@ -184,10 +217,10 @@ nav ul {
     @extend %searchBar-element;
 }
 
-
-
-.app-footer {
+footer nav {
     background-color: $primary-color;
+    width:100%;
+    padding-bottom:10px;
 }
 @media screen and (min-width: 768px) {
     .mobileOnly{
@@ -214,9 +247,7 @@ nav ul {
         justify-content:center;
         align-items: center;
 
-
-
-        #searchBar{
+        #searchBar {
             width:33.33%;
 
             form {
@@ -248,6 +279,17 @@ nav ul {
         }
     }
 
+}
+@media (hover:hover) {
+    nav ul li a,
+    nav ul li a:after {
+      transition: all .5s;
+    }
+
+
+    nav ul li a:hover:after {
+        width: 100%;
+    }
 
 }
 </style>
