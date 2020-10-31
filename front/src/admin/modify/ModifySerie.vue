@@ -29,27 +29,25 @@
 
     <section class="serie-mangas-modify">
         <h2>Modifier un volume</h2>
-        <form method="post" v-for="manga in serie.mangas" :key="manga.id">
-            <article>
-                <img :src="getImgPath(manga.image)" :alt="`Couverture de ${manga.title}`">
-                <p>Volume {{manga.volume}}</p>
-                <div class="input-item">
-                    <label for="cover">Couverture du manga:</label>
-                    <input type="file" name="cover">
-                </div>
-                <div class="input-item">
-                    <label for="releaseDate">Date de sortie</label>
-                    <input type="date" name="releaseDate" :value="manga.release_date">
-                </div>
-                <div class="input-item">
-                    <label for="stock">Stock:</label>
-                    <input type="number" name="stock" :value="manga.stock">
-                </div>
-                <Button @click="test">
-                    Editer le volume
-                </Button>
-            </article>
-        </form>
+        <article v-for="manga in serie.mangas" :key="manga.id">
+            <img :src="getImgPath(manga.image)" :alt="`Couverture de ${manga.title}`">
+            <p>Volume {{manga.volume}}</p>
+            <div class="input-item">
+                <label for="cover">Couverture du manga:</label>
+                <input type="file" name="cover">
+            </div>
+            <div class="input-item">
+                <label for="releaseDate">Date de sortie</label>
+                <input type="date" name="releaseDate" :value="manga.release_date">
+            </div>
+            <div class="input-item">
+                <label for="stock">Stock:</label>
+                <input type="number" name="stock" :value="manga.stock">
+            </div>
+            <Button>
+                Editer le volume
+            </Button>
+        </article>
     </section>
 
 
@@ -211,6 +209,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+input:not([type='checkbox']), select {
+    @include input-field;
+
+    margin-bottom: 10px;
+}
 
 section {
     border-bottom: 2px solid $primary-color;
@@ -223,12 +226,12 @@ img {
     height:300px;
 }
 
-.input-item {
-    margin-bottom: 10px;
-}
-
 .fas {
     @include red-icon
+}
+
+article {
+    margin-bottom: 50px;
 }
 
 @include tablet {
@@ -236,6 +239,5 @@ img {
         float:left;
         margin-right: 20px;
     }
-
 }
 </style>

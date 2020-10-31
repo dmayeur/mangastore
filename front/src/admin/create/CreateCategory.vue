@@ -48,7 +48,7 @@ export default {
             let categories = new CategoriesBroker();
             if(this.edit){
                 Promise.resolve(categories.modify(this.$route.params.id,category)).then ( () => {
-                    // this.$router.go(-1);
+                    this.$router.go(-1);
                 })
                 .catch ((e) => {
                     if(e.response.data.errorMessage) {
@@ -57,7 +57,7 @@ export default {
                 });
             } else {
                 Promise.resolve(categories.create(category)).then( () => {
-                    // this.$router.go(-1);
+                    this.$router.go(-1);
                 })
                 .catch ((e) => {
                     if(e.response.data.errorMessage) {
@@ -82,12 +82,15 @@ export default {
 
         if( this.$route.name.includes('Modify') ){
             this.edit=true;
-            // let categories = new CategoriesBroker();
-            // Promise.resolve(editors.getById(this.$route.params.id)).then( (response) => {
-            //     this.editor = response.data.name;
-            // })
-            // .catch (() => {
-            // });
+            let categories = new CategoriesBroker();
+            Promise.resolve(categories.getById(this.$route.params.id)).then( (response) => {
+                this.category = response.data.name;
+                if(response.data.parent) {
+                    this.categoryParent = response.data.parent
+                }
+            })
+            .catch (() => {
+            });
         }
     }
 }

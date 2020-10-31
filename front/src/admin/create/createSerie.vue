@@ -28,23 +28,29 @@
                 </ul>
             </li>
         </ul>
-        <select class="author-number" id="author-number" v-model="authorsNumber">
-            <option value="1">1</option>
-            <option value="2">2</option>
-        </select>
+
+        <div class="input-item">
+            <label for="author-number">Nombre d'auteurs: </label>
+            <select class="author-number" id="author-number" v-model="authorsNumber">
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+        </div>
+
         <div class="input-item">
             <label for="author">Auteur: </label>
             <select name="author" id="author" v-model="author">
                 <option v-for="author in authors" :key="author.id" :value="`${author.id}`">{{ author.name }}</option>
             </select>
         </div>
+
         <div class="input-item" v-if="authorsNumber==2">
             <label for="author2">Auteur n°2: </label>
             <select name="author2" id="author2" v-model="author2">
                 <option v-for="author in authors" :key="author.id" :value="`${author.id}`">{{ author.name }}</option>
             </select>
         </div>
-        <Button>
+        <Button type="submit">
             Créer la série
         </Button>
     </form>
@@ -181,6 +187,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+input:not([type='checkbox']), select {
+    @include input-field;
+
+    margin-bottom: 10px;
+}
+
 li > ul {
     padding-left: 20px;
 }

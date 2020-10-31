@@ -22,7 +22,15 @@ export class EditorsBroker extends BrokerCore {
 
     }
 
-    async create(datas) {
-        return await this.APICommunicator.postRequest('/editors',datas)
+    async createPrice(id, data) {
+        return await this.APICommunicator.postRequest('/editors/'+ id + '/prices', data);
+    }
+
+    async modify(id, data) {
+        return await this.APICommunicator.putRequest('/editors/'+id, data)
+    }
+
+    async create(data) {
+        return await this.APICommunicator.postRequest('/editors', data)
     }
 }

@@ -9,4 +9,7 @@ export class ReviewsBroker extends BrokerCore {
         return await this.APICommunicator.getRequest('/users/series/'+queryURL+'/reviews',token);
     }
 
+    async getAll(idSerie) {
+        return await this.APICommunicator.getRequest('/series/'+idSerie+'/reviews');
+    }
 }

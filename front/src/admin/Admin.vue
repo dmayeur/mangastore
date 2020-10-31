@@ -1,19 +1,18 @@
 <template lang="html">
   <div class="">
       <h1>Bienvenue sur la page d'administration de mangastore !</h1>
-      <p>Ici vous pouvez créer, éditer, ou supprimer selon votre besoin.</p>
+      <p>Ici vous pouvez gérer le contenu de votre site selon votre besoin.</p>
       <nav>
           <ul>
-              <li><router-link to="series">Séries</router-link></li>
+              <li><router-link to="/admin/series">Séries</router-link></li>
               <li>Commandes</li>
-              <li><router-link to="editeurs">Editeurs</router-link></li>
-              <li><router-link to="categories">Catégories</router-link></li>
+              <li><router-link to="/admin/editeurs">Editeurs</router-link></li>
+              <li><router-link to="/admin/categories">Catégories</router-link></li>
               <li>Reviews</li>
-              <li><router-link to="auteurs">Auteurs</router-link></li>
-              <li>Prix</li>
+              <li><router-link to="/admin/auteurs">Auteurs</router-link></li>
           </ul>
       </nav>
-      <router-link :to="$route.path+'/create'">Créer</router-link>
+      <router-link :to="$route.path.replace(/\/+$/, '')+'/create'"><Button>Créer</Button></router-link>
       <AdminTable
         :header="tableHeader"
         :body="tableValues"
@@ -28,22 +27,22 @@ import  {SeriesBroker} from '@/js/SeriesBroker.js';
 import  {EditorsBroker} from '@/js/EditorsBroker.js';
 import  {CategoriesBroker} from '@/js/CategoriesBroker.js';
 import  {AuthorsBroker} from '@/js/AuthorsBroker.js';
-
-import AdminTable from '@/admin/AdminTable.vue'
+import Button from '@/components/Button.vue';
+import AdminTable from '@/admin/AdminTable.vue';
 
 export default {
     data: function() {
         return {
-            tableHeader: [],
-            tableValues: [],
+            tableHeader: {},
+            tableValues: {},
         }
     },
     components: {
-        AdminTable
+        AdminTable,
+        Button
     },
     methods: {
         updateTable: function(response) {
-            console.log(response);
             this.tableHeader=[];
             this.tableValues=[];
             let arr=[];
@@ -112,13 +111,13 @@ export default {
                 }
             }
         },
-        del(id){
+        del(id, index){
             switch(this.$route.name) {
                 case 'AdminAuthors': {
                     let authors = new AuthorsBroker();
                     Promise.resolve(authors.delete(id))
-                    .then( (response) => {
-                        console.log(response);
+                    .then( () => {
+                        this.tableValues.splice(index,1);
                     })
                     .catch ((e) => {
                         if(e.response.data.errorMessage) {
@@ -130,8 +129,8 @@ export default {
                 case 'AdminSeries': {
                     let series = new SeriesBroker();
                     Promise.resolve(series.delete(id))
-                    .then( (response) => {
-                        console.log(response);
+                    .then( () => {
+                        this.tableValues.splice(index,1);
                     })
                     .catch ((e) => {
                         if(e.response.data.errorMessage) {
@@ -140,12 +139,22 @@ export default {
                     });
                     break;
                 }
-
+                case 'AdminCategories': {
+                    let categories = new CategoriesBroker();
+                    Promise.resolve(categories.delete(id))
+                    .then( () => {
+                        this.tableValues.splice(index,1);
+                    })
+                    .catch ((e) => {
+                        if(e.response.data.errorMessage) {
+                            this.errorMessage = e.response.data.errorMessage
+                        }
+                    });
+                }
             }
         }
     },
     mounted(){
-        console.log(this.$route);
         //we initialize the table when it's mounted
         this.onChangeRoute(this.$route.name);
     },
@@ -176,4 +185,7 @@ ul {
     justify-content: space-between;
 }
 
+button {
+    margin: 10px auto;
+}
 </style>

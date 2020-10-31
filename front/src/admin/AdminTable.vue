@@ -38,12 +38,12 @@
 
 export default {
     props: {
-        header: Array,
-        body: Array
+        header: Object,
+        body: Object
     },
     methods: {
         del(index) {
-            this.$emit('del',this.body[index].id);
+            this.$emit('del',this.body[index].id,index);
         }
     }
 }
