@@ -1,62 +1,65 @@
 <template lang="html">
-
 <aside class="catalog-search">
-    <button type="button" class="btn-close mobileOnly" @click="closeAside">
-        <i class="far fa-times-circle"></i>
-    </button>
-    <form class="catalog-search--form" method="GET" @submit.prevent>
-        <label for="search">Rechercher une série: </label>
+    <!-- wrapper only to not break scrolling on mobile -->
+    <div class="catalog-search-wrapper">
+        <button type="button" class="btn-close mobileOnly" @click="closeAside">
+            <i class="far fa-times-circle"></i>
+        </button>
+        <form class="catalog-search--form" method="GET" @submit.prevent>
+            <transition
+                name="fade-in-down"
+                enter-active-class="animated fadeInDown"
+                leave-active-class="animated fadeOutUp"
+            >
+                <div class="searchProposition" v-if="search">
 
-        <input type="text" name="search" id="search" autocomplete="off" v-model="search">
-        <transition
-            name="fade-in-down"
-            enter-active-class="animated fadeInDown"
-            leave-active-class="animated fadeOutUp"
-        >
-            <div class="searchProposition" v-if="search">
+                </div>
+            </transition>
 
-            </div>
-        </transition>
-
-        <div class="catalog-search--header">
-            Trier par
-        </div>
-
-        <ul>
-            <li>
-                <input type="radio" id="alphabetical" name="sort" value="alphabetical" v-model="sortBy" @change="onInputChange">
-                <label for="alphabetical">Ordre alphabétique</label>
-            </li>
-            <li>
-                <input type="radio" id="release-date" name="sort" value="date" v-model="sortBy" @change="onInputChange">
-                <label for="release-date">Date de sortie</label>
-            </li>
-        </ul>
-
-        <div v-for="category in categories" :key="category.id" class="catalog-search--item" @change="onInputChange">
             <div class="catalog-search--header">
-                {{category.name}}
+                Trier par
             </div>
+
             <ul>
-                <li v-for="childCategory in category.childs" :key="childCategory.id">
-                    <input class="category" type="checkbox" :name="`${childCategory.id}`" :value="`${childCategory.name}`" v-model="categoriesChecked" :id="`${childCategory.name}`">
-                    <label :for="`${childCategory.name}`">{{childCategory.name}}</label>
+                <li>
+                    <input type="radio" id="alphabetical" name="sort" value="alphabetical" v-model="sortBy" @change="onInputChange">
+                    <label for="alphabetical">Ordre alphabétique</label>
+                </li>
+                <li>
+                    <input type="radio" id="release-date" name="sort" value="date" v-model="sortBy" @change="onInputChange">
+                    <label for="release-date">Date de sortie</label>
+                </li>
+                <li>
+                    <input type="radio" id="rating" name="sort" value="rating" v-model="sortBy" @change="onInputChange">
+                    <label for="rating">Note moyenne</label>
                 </li>
             </ul>
-        </div>
 
-        <div class="catalog-search--item" @change="onInputChange">
-            <div class="catalog-search--header">
-                Editeur
+            <div v-for="category in categories" :key="category.id" class="catalog-search--item" @change="onInputChange">
+                <div class="catalog-search--header">
+                    {{category.name}}
+                </div>
+                <ul>
+                    <li v-for="childCategory in category.childs" :key="childCategory.id">
+                        <input class="category" type="checkbox" :name="`${childCategory.id}`" :value="`${childCategory.name}`" v-model="categoriesChecked" :id="`${childCategory.name}`">
+                        <label :for="`${childCategory.name}`">{{childCategory.name}}</label>
+                    </li>
+                </ul>
             </div>
-            <ul>
-                <li v-for="editor in editors" :key="editor.id">
-                    <input class='editor' type="checkbox" :name="`${editor.name}`" :value="`${editor.name}`" v-model="editorsChecked" :id="`${editor.name}`">
-                    <label :for="`${editor.name}`">{{editor.name}}</label>
-                </li>
-            </ul>
-        </div>
-    </form>
+
+            <div class="catalog-search--item" @change="onInputChange">
+                <div class="catalog-search--header">
+                    Editeur
+                </div>
+                <ul>
+                    <li v-for="editor in editors" :key="editor.id">
+                        <input class='editor' type="checkbox" :name="`${editor.name}`" :value="`${editor.name}`" v-model="editorsChecked" :id="`${editor.name}`">
+                        <label :for="`${editor.name}`">{{editor.name}}</label>
+                    </li>
+                </ul>
+            </div>
+        </form>
+    </div>
 </aside>
 
 </template>
@@ -75,10 +78,13 @@ export default {
             categories: [],
             categoriesChecked: [],
             sortBy: "alphabetical",
-            search: "",
+            // search: "",
             queryURL: "",
             loadingMangas: false
         }
+    },
+    props: {
+        search: String
     },
     watch: {
         search: function(){
@@ -103,6 +109,7 @@ export default {
                     this.queryURL +='editor='+editor+'&';
                 }
             }
+
             //empty string if no request, delete the trailing & otherwise
             this.queryURL = this.queryURL.slice(0, -1);
             this.$emit('form-change',this.queryURL);
@@ -145,6 +152,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+//Make the menu scrollable on mobile
+.catalog-search-wrapper {
+    max-height: calc(100vh - 20px);
+    overflow-y: auto;
+}
+
 //hiding the menu
 aside {
     width: 100%;
@@ -154,6 +168,7 @@ aside {
     top:0;
     left:-750px;
 
+    overflow-y: auto;
     transition: transform 1s;
     z-index:3;
     background-color: $secondary-color;
@@ -179,12 +194,14 @@ aside {
     background: transparent;
 }
 
-// the hidden checkbox code that is used to display the menu in mobile
-
 
 .catalog-search--item {
     li label {
         padding-left:5px;
+    }
+
+    li:not(:last-child) {
+        margin-bottom:0.8rem;
     }
 }
 

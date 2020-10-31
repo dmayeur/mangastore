@@ -22,17 +22,18 @@
                 <i class="fas fa-star" @click="rate(2)"></i>
                 <i class="fas fa-star" @click="rate(1)"></i>
             </div>
-            <!-- <Loader v-if="loadingMangas">
 
-            </Loader> -->
-            <section v-if="rating">
+            <section class="serie-reviews-content" v-if="rating">
                 <h2>Ajouter une critique</h2>
-                <form method="post" @submit.prevent="postReview">
+                <form method="post" @submit.prevent="sendReview">
                     <label for="review">Votre critique</label>
                     <textarea name="content" id="review" rows="8" cols="80" v-model="review"></textarea>
-                    <small>{{review.length}}/10 000</small>
-                    <Button>
-                        Submit
+                    <small>{{ review.length }}/10 000</small>
+                    <Button type="submit" v-if="!reviewExist">
+                        Envoyer la critique
+                    </Button>
+                    <Button type="submit" v-else>
+                        Modifier la critique
                     </Button>
                 </form>
             </section>
@@ -47,7 +48,6 @@
 
 <script>
 import Button from '@/components/Button.vue'
-// import Loader from '@/components/Loader.vue'
 import { mapGetters } from "vuex";
 
 import  {SeriesBroker} from '@/js/SeriesBroker.js';
@@ -59,20 +59,46 @@ export default {
                 id: this.$route.params.id,
                 reviews: [],
                 review: "",
-                rating: 0
+                rating: 0,
+                reviewExist: false
             };
     },
     components: {
         Button,
-        // Loader
     },
     computed: {
         ...mapGetters(["isAuthenticated", "authStatus","token"])
     },
+    watch: {
+        //automatically fill the fields upon login
+        isAuthenticated: function(val) {
+            //if the user logged in
+            if(val) {
+                this.updateUserReview();
+            }
+        }
+    },
     methods: {
-        postReview() {
+        updateUserReview() {
+            let reviews = new ReviewsBroker();
+
+            Promise.resolve(reviews.getByUser(this.$route.params.id,  this.$store.getters.token))
+            .then( (response) => {
+                this.rating = parseInt(response.data.rating);
+                if (response.data.content) {
+                    this.review = response.data.content;
+                    this.reviewExist = true;
+                }
+                this.checkStars();
+            })
+            .catch(() => {
+                this.review = "";
+                this.rating = 0;
+            })
+        },
+        sendReview() {
             let series = new SeriesBroker();
-            Promise.resolve(series.createReview(this.$route.params.id,{token: this.$store.getters.token, content: this.review})).then ( (response) => {
+            Promise.resolve(series.modifyReview(this.$route.params.id,{token: this.$store.getters.token, content: this.review})).then ( (response) => {
                 console.log(response);
             });
         },
@@ -105,18 +131,18 @@ export default {
             }
         }
     },
-    mounted() {
+    created() {
+        let reviews = new ReviewsBroker();
+        Promise.resolve(reviews.getAll(this.$route.params.id))
+        .then( (response) => {
+            this.reviews = response.data;
+        })
+        .catch(() => {
+            this.reviews = [];
+        })
+
         if(this.$store.getters.isAuthenticated) {
-            let reviews = new ReviewsBroker();
-            Promise.resolve(reviews.getByUser(this.$route.params.id,  this.$store.getters.token))
-            .then( (response) => {
-                this.rating = parseInt(response.data.rating);
-                this.checkStars();
-            })
-            .catch(() => {
-                this.review = "";
-                this.rating = 0;
-            })
+            this.updateUserReview();
         }
     }
 }
@@ -172,6 +198,14 @@ form label {
 
 .checked {
     color:orange;
+}
+
+.serie-reviews-content {
+    margin-top: 20px;
+}
+
+.serie-reviews-content button {
+    margin-top: 10px;
 }
 
 @media (hover: hover) {

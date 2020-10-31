@@ -38,7 +38,6 @@ export default {
             } catch {
                 return require('../media/covers/empty.jpg');
             }
-
         }
     }
 }
@@ -48,22 +47,15 @@ export default {
 
 
 //main properties
-article{
-    display:flex;
-    flex-direction:column;
-
-    padding:10px;
-    max-width:200px;
-    background-color: #fff;
-
-    transition: box-shadow 0.3s, transform 0.3s;
-
-    margin-bottom:20px;
+article {
+    @include article;
 }
 
 //the image at the top of the article
 img {
-    max-width:100%;
+    // max-width:100%;
+    height: 180px;
+    width: auto;
 }
 
 //the title
@@ -110,13 +102,19 @@ p:first-of-type {
     text-align:center;
 }
 
+@include tablet {
+
+    article {
+        max-width: 150px;
+    }
+}
 /* ===================================================
                 DESKTOPS - 992 PX AND UP
 ================================================== */
-@media screen and (min-width: 992px) {
+@include desktop {
 
-    article{
-        max-width:250px;
+    article {
+        max-width:220px;
     }
 
     img {
@@ -139,6 +137,12 @@ p:first-of-type {
         overflow: hidden;
     }
 
+}
+
+@include extralarge {
+    article {
+        max-width: 250px;
+    }
 }
 
 @media (hover: hover) {

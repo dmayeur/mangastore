@@ -21,4 +21,11 @@ export class CategoriesBroker extends BrokerCore {
         return await this.APICommunicator.postRequest('/categories',data);
     }
 
+    async modify(id, data) {
+        return await this.APICommunicator.putRequest('/categories/'+id, data)
+    }
+
+    async delete(id) {
+        return await this.APICommunicator.deleteRequest('/categories/'+id)
+    }
 }

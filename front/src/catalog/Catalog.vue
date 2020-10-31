@@ -13,7 +13,7 @@
                 Filtrer les séries
             </Button>
 
-            <CatalogAside @form-change="onInputChange" @close-aside="onToggleFilter">
+            <CatalogAside @form-change="onInputChange" @close-aside="onToggleFilter" :search="search">
 
             </CatalogAside>
         </div>
@@ -62,16 +62,18 @@ export default {
         }
     },
     props: {
-        // search: String
-    },
-    computed: {
-
+        search: String
     },
     components: {
         CatalogAside,
         CatalogArticle,
         Loader,
         Button
+    },
+    watch: {
+        search: function(val) {
+            console.log(val);
+        }
     },
     methods: {
         onToggleFilter: function(){
@@ -108,9 +110,16 @@ export default {
         }
     },
     mounted(){
-        //initializing the catalog
+        // initializing the catalog
+        let queryURL = "";
+
+        if(this.search) {
+            queryURL = "?search="+this.search;
+        }
+
+        // this.reloadMangas();
         let series = new SeriesBroker();
-        Promise.resolve(series.getAll(""))
+        Promise.resolve(series.getAll(queryURL))
         .then( (response) => {
             this.mangas = response.data.data;
             this.pages = response.data.pages;

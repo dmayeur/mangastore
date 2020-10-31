@@ -34,7 +34,6 @@ const actions = {
             Promise.resolve(usersBroker.login(user))
             .then( (response) => {
                 commit('authSuccess',response.data);
-                console.log(response.data);
                 Cookie.setCookie('user-token',response.data.token,1);
                 Cookie.setCookie('role',response.data.role,1);
                 resolve(response);

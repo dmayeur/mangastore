@@ -99,12 +99,20 @@ const routes = [
     component: () => import('../admin/Admin.vue')
 },
 {
+    path: '/admin/editeurs/create',
+    name: 'AdminEditorCreate',
+    meta: {
+      title: 'Admin'
+    },
+    component: () => import('../admin/create/CreateEditor.vue')
+},
+{
     path: '/admin/editeurs/:id',
     name: 'AdminEditorsModify',
     meta: {
       title: 'Admin'
     },
-    component: () => import('../admin/Admin.vue')
+    component: () => import('../admin/modify/ModifyEditor.vue')
 },
 {
     path: '/admin/categories',
@@ -119,6 +127,14 @@ const routes = [
     name: 'AdminCategoriesCreate',
     meta: {
       title: 'Admin - Categories'
+    },
+    component: () => import('../admin/create/CreateCategory.vue')
+},
+{
+    path: '/admin/categories/:id',
+    name: 'AdminCategoriesModify',
+    meta: {
+      title: 'Admin'
     },
     component: () => import('../admin/create/CreateCategory.vue')
 },
