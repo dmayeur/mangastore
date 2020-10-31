@@ -9,13 +9,11 @@ class OrderController extends CoreController {
     }
 
     public function create($body) {
-        // var_dump(json_decode(($_POST['mangas'])));
-        //
-        var_dump($this->request->getJSON());
+        var_dump($body);
         // $test = json_decode($_POST[0]);
-        // foreach ($test as $test2){
-            // var_dump($test2->id);
-        // }
+        foreach ($body as $item){
+            var_dump($test2->id);
+        }
         exit();
     }
 }

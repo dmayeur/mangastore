@@ -12,6 +12,11 @@ class CategoryController extends CoreController{
         $this->checkResponse($results);
     }
 
+    public function getById($id){
+        $results = $this->model->getById($id);
+        $this->checkResponse($results);
+    }
+
     public function getAdmin() {
         $results = $this->model->getAdmin();
 
@@ -19,7 +24,39 @@ class CategoryController extends CoreController{
     }
 
     public function create($body) {
-        var_dump($body);
-        exit();
+
+        if (empty($body['category']) ){
+            throw new RestException('Paramètre manquant: category',401);
+        }
+
+        $categoryParent = null;
+        if (isset($body['categoryParent'])) {
+            $categoryParent = $body['categoryParent'];
+        }
+
+        $result = $this->model->create($body['category'], $categoryParent);
+
+        $this->sendResponse(201,$result);
+    }
+
+    public function delete ($id) {
+        $result = $this->model->delete($id);
+
+        $this->sendResponse(201,'Supression réussie');
+    }
+
+    public function modify($id, $body) {
+        if (empty($body['category']) ){
+            throw new RestException('Paramètre manquant: category',401);
+        }
+
+        $categoryParent = null;
+        if (isset($body['categoryParent'])) {
+            $categoryParent = $body['categoryParent'];
+        }
+
+        $result = $this->model->modify($id, $body['category'], $categoryParent);
+
+        $this->sendResponse(201,'Modification de la catégorie réussie');
     }
 }

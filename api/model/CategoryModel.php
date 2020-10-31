@@ -69,4 +69,28 @@ class CategoryModel {
 
         return $results;
     }
+
+    public function create($name, $categoryParent) {
+        $query = "INSERT INTO categories (name, category_parent)
+                 VALUES (?, ?)
+        ";
+
+        return $this->db->postQuery($query, [$name, $categoryParent]);
+    }
+
+    public function modify($id, $name, $categoryParent) {
+        $query = "UPDATE categories
+                 SET name = ?, category_parent = ?
+                 WHERE id = ?
+        ";
+
+        return $this->db->postQuery($query, [$name, $categoryParent, $id]);
+    }
+
+    public function delete($id) {
+        $query = "DELETE FROM categories
+                 WHERE id = ?";
+
+        return $this->db->executeSQL($query,[$id]);
+    }
 }

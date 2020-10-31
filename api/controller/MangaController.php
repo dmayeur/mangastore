@@ -3,8 +3,8 @@
 class MangaController extends CoreController {
     protected $model;
     protected $request;
-    protected $id=[];
-    protected $categories=[];
+    protected $id = [];
+    protected $categories = [];
 
     //the default sorting
     protected $sort="series.name";
@@ -34,7 +34,6 @@ class MangaController extends CoreController {
                     $this->categories[]=$value;
             }
         }
-
     }
 
 
@@ -48,7 +47,9 @@ class MangaController extends CoreController {
         return $whereQuery;
     }
 
-    public function getAll(){
+    public function getAll($request){
+        $this->queryToParameters($request);
+
         $results = $this->model->getAll($this->parametersToArrays());
 
         if($results) {

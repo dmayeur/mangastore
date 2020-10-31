@@ -9,7 +9,14 @@ class EditorController extends CoreController{
     }
 
     public function getById($id) {
-        $serie = $this->model->getById($id);
+        $result = $this->model->getById($id);
+        if (!$result) {
+            throw new RestException('Editeur non trouvé',404);
+        }
+
+        $result['prices'] = $this->model->getPrices($id);
+
+        $this->sendResponse(200,$result);
     }
 
     public function getAll() {
@@ -22,18 +29,37 @@ class EditorController extends CoreController{
         $this->checkResponse($results);
     }
 
-    public function create($id, $body) {
-
+    public function create($body) {
         if(!isset($body['editor'])){
             throw new RestException('Paramètre manquant',400);
         }
 
         $result = $this->model->create($body['editor']);
 
-        if(!$result) {
-            throw new RestException('Erreur SQL',400);
-        } else {
-            $this->sendResponse(201,$result);
+        $this->sendResponse(201,$result);
+    }
+
+    public function createPrice($id, $body) {
+        if( empty($body['price']) || empty($body['priceCode']) ){
+                throw new RestException('Paramètres attendu: "price" et "priceCode"',400);
         }
+
+        $id = $this->model->createPrice($id, $body['price'], $body['priceCode']);
+
+        $this->sendResponse(201,[
+            'id' => $id,
+            'price' => $body['price'],
+            'price_code' => $body['priceCode']
+        ]);
+    }
+
+    public function modify($id, $body) {
+        if(!isset($body['editor'])){
+            throw new RestException('Paramètre manquant',400);
+        }
+
+        $this->model->modify($id, $body['editor']);
+
+        $this->sendResponse(201,"Modification réalisée avec succès");
     }
 }

@@ -7,7 +7,16 @@ class ReviewModel {
         $this->db = new Database();
     }
 
-    public function create($serieId, $userId, $rating){
+    public function getAll($serieId) {
+        $query = "SELECT reviews.id, rating, content, username FROM reviews
+                LEFT JOIN users ON reviews.user_id = users.id
+                WHERE serie_id = ? and content IS NOT NULL
+        ";
+
+        return $this->db->getQuery($query, [$serieId]);
+    }
+
+    public function create($serieId, $userId, $rating) {
         $query = "INSERT INTO reviews (serie_id, user_id, rating)
                  VALUES (?, ?, ?)
         ";
@@ -15,16 +24,27 @@ class ReviewModel {
         return $this->db->postQuery($query,[$serieId, $userId, $rating]);
     }
 
-    public function modifyRating($serieId, $userId, $rating){
+    public function modifyRating($serieId, $userId, $rating) {
+
         $query = "UPDATE reviews
                  SET rating = ?
                  WHERE user_id = ? AND serie_id = ?
         ";
 
-        return $this->db->postQuery($query,[$rating,$userId,$serieId]);
+        return $this->db->postQuery($query, [$rating,$userId,$serieId]);
     }
 
-    public function getReview($serieId,$userId){
+    public function modifyReview($serieId, $userId, $review) {
+
+        $query = "UPDATE reviews
+                 SET content = ?
+                 WHERE user_id = ? AND serie_id = ?
+        ";
+
+        return $this->db->postQuery($query, [$review, $userId, $serieId]);
+    }
+
+    public function getReview($serieId,$userId) {
         $query = "SELECT id, rating, content FROM reviews
                 WHERE serie_id = ? AND user_id = ?;";
 

@@ -51,6 +51,7 @@ class Utilities {
             '.jpg' => 1,
             '.jpeg' => 1
         ];
+        
         $extension = strrchr($file['name'], '.');
 
         if(!isset($extensions[$extension])){ //If wrong extension

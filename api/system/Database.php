@@ -14,12 +14,12 @@ class Database{
     public $db;
 
 
-    public function __construct(){
+    public function __construct() {
         $this->getConnection();
     }
 
 
-    public function getConnection(){
+    public function getConnection() {
 
         $this->db = null;
 
@@ -32,8 +32,7 @@ class Database{
         return $this->db;
     }
 
-    public function getQuery($sql, $criteria = array())
-    {
+    public function getQuery($sql, $criteria = array()) {
         $query = $this->db->prepare($sql);
         $query->execute($criteria);
         return $query->fetchAll();
@@ -45,13 +44,13 @@ class Database{
         return $query->fetch();
     }
 
-    public function postQuery(String $sql , $values){
+    public function postQuery(String $sql , $values) {
         $query = $this->db->prepare($sql);
         $query->execute($values);
         return $this->db->lastInsertId();
     }
 
-    public function executeSQL(String $sql , $values){
+    public function executeSQL(String $sql , $values) {
         $query = $this->db->prepare($sql);
         return $query->execute($values);
     }

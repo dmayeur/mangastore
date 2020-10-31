@@ -15,10 +15,6 @@ class SerieController extends CoreController{
 
     public function __construct() {
         $this->model = new SerieModel();
-
-        // if($request->getMethod()=='GET'){
-        //     $this->queryToParameters($request->getBody());
-        // }
     }
 
     public function queryToParameters($queryURL) {
@@ -43,6 +39,9 @@ class SerieController extends CoreController{
                     switch ($value) {
                         case 'date':
                             $this->sort="release_date DESC";
+                            break;
+                        case 'rating':
+                            $this->sort = "avg(rating) DESC";
                             break;
                         default:
                             $this->sort="series.name";
@@ -120,6 +119,7 @@ class SerieController extends CoreController{
 
     public function getAllAdmin() {
         $results = $this->model->getAllAdmin();
+
         if($results) {
             $this->sendResponse(200, $results);
         } else {
@@ -170,40 +170,6 @@ class SerieController extends CoreController{
 
     }
 
-    public function postReview($id) {
-        $serie = $this->model->getById($id);
-        if( !$serie ){
-            throw new RestException("Aucune série correspondant à l'id",404);
-        }
-
-        if( !isset($_POST['token']) ) {
-            throw new RestException("JWT token manquant.", 401);
-        }
-
-        $auth = new Auth();
-
-        try {
-            $user = $auth->getUser($_POST['token']);
-        } catch (Exception $e) {
-            throw new RestException("Erreur avec le token",401);
-        }
-
-        $userModel = new UserModel();
-        $user = $userModel->getById($user->id);
-
-        if(!$user) {
-            throw new RestException("L'utilisateur n'existe pas",404);
-        }
-
-        $reviewModel = new ReviewModel();
-
-        $result = $reviewModel->create($id, $user['id'], $_POST['rating']);
-        $this->sendResponse(201,[
-            'message' => 'Création de la note réussie',
-            'rating' => $_POST['rating']
-        ]);
-    }
-
     public function deleteCategory($id) {
         $user = $this->getUser();
         if($user['role']!='admin') {
@@ -244,14 +210,25 @@ class SerieController extends CoreController{
 
     }
 
-    public function putRating($id) {
-        $serie = $this->model->getById($id);
-        if( !$serie ){
-            throw new RestException("Aucune série correspondant à l'id",404);
-        }
+    public function getReviews($id) {
 
-        if( !isset($_POST['token']) ) {
-            throw new RestException("JWT token manquant.", 401);
+        $reviewModel = new ReviewModel();
+
+        $result = $reviewModel->getAll($id);
+
+        if($result) {
+            $this->sendResponse(200, $results);
+        } else {
+            $this->sendResponse(404, [
+                'errorMessage' => 'Aucune critique pour cette série'
+            ]);
+        }
+    }
+
+    public function postReview($id, $body) {
+
+        if( empty($body['token']) || empty($body['rating']) ) {
+            throw new RestException('Paramètres attendu: "token" et "rating".', 401);
         }
 
         $auth = new Auth();
@@ -259,23 +236,70 @@ class SerieController extends CoreController{
         try {
             $user = $auth->getUser($_POST['token']);
         } catch (Exception $e) {
-            throw new RestException("Erreur avec le token",401);
-        }
-
-        $userModel = new UserModel();
-        $user = $userModel->getById($user->id);
-
-        if(!$user) {
-            throw new RestException("L'utilisateur n'existe pas",404);
+            throw new RestException("Erreur avec le token", 401);
         }
 
         $reviewModel = new ReviewModel();
 
-        $result = $reviewModel->modifyRating($id, $user['id'], $_POST['rating']);
-        $this->sendResponse(201,[
-            'message' => 'Modification de la note réussie',
-            'rating' => $_POST['rating']
+        try {
+            $result = $reviewModel->create($id, $user['id'], $body['rating']);
+        } catch (Exception $e) {
+            throw new RestException("Série ou utilisateur inexistant", 401);
+        }
+
+        $this->sendResponse(201, [
+            'message' => 'Création de la note réussie',
+            'rating' => $body['rating']
         ]);
+    }
+
+    public function putRating($id, $body) {
+
+        if( empty($body['token']) || empty($body['rating']) ) {
+            throw new RestException('Paramètres attendu: "token" et "rating".', 401);
+        }
+
+        $auth = new Auth();
+
+        try {
+            $user = $auth->getUser($body['token']);
+        } catch (Exception $e) {
+            throw new RestException("Erreur avec le token", 401);
+        }
+
+        $reviewModel = new ReviewModel();
+
+        try {
+            $result = $reviewModel->modifyRating($id, $user->id, $body['rating']);
+        } catch (Exception $e) {
+            throw new RestException("Série ou utilisateur inexistant", 401);
+        }
+
+        $this->sendResponse(201, [
+            'message' => 'Modification de la note réussie',
+            'rating' => $body['rating']
+        ]);
+    }
+
+    public function putReview($id, $body) {
+
+        $auth = new Auth();
+
+        try {
+            $user = $auth->getUser($_POST['token']);
+        } catch (Exception $e) {
+            throw new RestException("Erreur d'authentication", 401);
+        }
+
+        $reviewModel = new ReviewModel();
+
+        $result = $reviewModel->modifyReview($id, $user->id, $body['content']);
+
+        $this->sendResponse(201, [
+            'message' => 'Modification de la critique réussie',
+            'content' => $body['content']
+        ]);
+
     }
 
     public function delete($id){
