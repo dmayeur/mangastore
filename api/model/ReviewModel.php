@@ -16,6 +16,16 @@ class ReviewModel {
         return $this->db->getQuery($query, [$serieId]);
     }
 
+    public function getAllAdmin() {
+        $query = "SELECT reviews.id, username as pseudo, rating as note, content as critique, series.name as serie FROM reviews
+                LEFT JOIN users ON reviews.user_id = users.id
+                LEFT JOIN series ON reviews.serie_id = series.id
+                WHERE content IS NOT NULL
+        ";
+
+        return $this->db->getQuery($query);
+    }
+
     public function create($serieId, $userId, $rating) {
         $query = "INSERT INTO reviews (serie_id, user_id, rating)
                  VALUES (?, ?, ?)

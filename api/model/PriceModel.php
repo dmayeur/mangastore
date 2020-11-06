@@ -9,7 +9,7 @@ class PriceModel {
 
     function getByEditor($editor) {
         $query = "SELECT code, price, editor_name FROM prices
-                INNER JOIN editors on prices.editor_id=editors.id;
+                LEFT JOIN editors on prices.editor_id=editors.id;
                 WHERE editor_id = ?
                 ;";
 

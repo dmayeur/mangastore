@@ -53,6 +53,12 @@ class EditorController extends CoreController{
         ]);
     }
 
+    public function modifyPrice($id, $priceCode, $body) {
+        $this->model->modifyPrice($id, $body['price'], $priceCode);
+
+        $this->sendResponse(204,"Modification réalisée avec succès");
+    }
+
     public function modify($id, $body) {
         if(!isset($body['editor'])){
             throw new RestException('Paramètre manquant',400);
@@ -60,6 +66,13 @@ class EditorController extends CoreController{
 
         $this->model->modify($id, $body['editor']);
 
-        $this->sendResponse(201,"Modification réalisée avec succès");
+        $this->sendResponse(204,"Modification réalisée avec succès");
+    }
+
+    public function delete($id) {
+
+        $this->model->delete($id);
+
+        $this->sendResponse(204,"Supression réalisée avec succès");
     }
 }

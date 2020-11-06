@@ -9,9 +9,9 @@ class EditorModel {
 
     function getPrices($editor) {
         $query = "SELECT name as editor, code as price_code, price FROM editors
-                INNER JOIN prices on prices.editor_id=editors.id
+                LEFT JOIN prices on prices.editor_id=editors.id
                 WHERE editors.id = ?
-                ;";
+        ";
 
         return $this->db->getQuery($query, [$editor]);
     }
@@ -19,7 +19,7 @@ class EditorModel {
     function getAll(){
 
         $query = "SELECT id, name FROM editors
-                ;";
+        ";
 
         $results = $this->db->getQuery($query);
 
@@ -29,7 +29,7 @@ class EditorModel {
     function getById($id) {
         $query = "SELECT id, name FROM editors
                 WHERE id = ?
-                ;";
+        ";
 
         $results = $this->db->getQueryOne($query, [$id]);
 
@@ -52,10 +52,27 @@ class EditorModel {
         return $this->db->postQuery($query, [$name]);
     }
 
+    function modifyPrice($editor, $price, $code) {
+        $query = "UPDATE prices
+                 SET price = ?
+                 WHERE code = ? AND editor_id = ?
+        ";
+
+        return $this->db->executeSQL($query, [$price, $code, $editor]);
+    }
+
     function modify($id, $name) {
         $query = "UPDATE editors
                  SET name = ?
                  WHERE id = ?";
         return $this->db->executeSQL($query, [$name, $id]);
+    }
+
+    function delete($id) {
+        $query = "DELETE FROM editors
+                 WHERE id = ?
+        ";
+
+        return $this->db->executeSQL($query,[$id]);
     }
 }

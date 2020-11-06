@@ -141,6 +141,13 @@ class SerieModel extends CoreModel {
         return $this->db->postQuery($query,[$serie, $author]);
     }
 
+    public function deleteAuthor($serie, $author) {
+        $query = "DELETE FROM authors_series
+                 WHERE serie_id = ? AND author_id = ?";
+
+        return $this->db->executeSQL($query, [$serie, $author]);
+    }
+
     function delete($id) {
         $query = "DELETE FROM series
                  WHERE id = ?";

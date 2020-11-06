@@ -1,5 +1,4 @@
 <?php
-require_once("CoreModel.php");
 
 class UserModel {
     private $db;
@@ -37,4 +36,10 @@ class UserModel {
         return $this->db->postQuery($query,$values);
     }
 
+    public function getDetails($id) {
+        $query = "SELECT username, email, firstname, lastname, address, zip_code, city, country FROM users
+                WHERE id = ?";
+
+        return $this->db->getQueryOne($query,[$id]);
+    }
 }

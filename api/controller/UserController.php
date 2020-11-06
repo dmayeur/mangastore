@@ -140,17 +140,36 @@ class UserController extends CoreController{
         }
     }
 
-    public function isAdmin($body) {
-        if(!isset($body['token'])) {
-            throw new RestException('Token manquant',401);
-        }
-
-        $auth = new Auth();
-
-        var_dump($auth->decode($body['token']));
+    public function isAdmin() {
+        //The role check is done with the router, so if we are here it means the user is an admin
+        $this->sendResponse(204,'The user is admin');
     }
 
+    /**
+     * [getUser get the user info thanks to a token]
+     */
+    public function getUser(){
+        $auth = new Auth();
+        try {
+            $user = $auth->headerToken();
+        } catch (Exception $e) {
+            throw new RestException("Erreur d'authentication",401);
+        }
 
+        $userInfos = $this->model->getDetails($user->id);
+
+        if($userInfos){
+            $this->sendResponse(200, $userInfos);
+        } else {
+            $this->sendResponse(404,[
+                "errorMessage" => 'Aucun utilisateur trouvé.'
+            ]);
+        }
+    }
+
+    /**
+     * [getReview get the review for a serie for a user]
+     */
     public function getReview($id){
         $auth = new Auth();
         try {

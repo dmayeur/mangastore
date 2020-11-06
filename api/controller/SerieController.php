@@ -158,6 +158,20 @@ class SerieController extends CoreController{
 
     }
 
+    public function createAuthor($id, $body) {
+        $idAuthor = $this->model->createAuthor($id,$body['author']);
+
+        $this->sendResponse(201,[
+            'message' => 'Création réussie'
+        ]);
+
+    }
+
+    public function deleteAuthor($id,$idAuthor) {
+        $result = $this->model->deleteAuthor($id, $idAuthor);
+        $this->sendResponse(201,'Supression réussie');
+    }
+
     public function createCategories($id, $body) {
         foreach ($body['categories'] as $category) {
             $this->model->createCategory($id,$category);
@@ -170,20 +184,17 @@ class SerieController extends CoreController{
 
     }
 
-    public function deleteCategory($id) {
-        $user = $this->getUser();
-        if($user['role']!='admin') {
 
-        }
-        $result = $this->model->deleteCategory($id, $_POST['category']);
+    public function deleteCategory($id) {
+        $result = $this->model->deleteCategory($id, $body['category']);
         if(!$result) {
-            throw new RestException('Erreur SQL',400);
+            throw new RestException('Erreur SQL',500);
         } else {
-            $this->sendResponse(201,'Supression réussie');
+            $this->sendResponse(204,'Supression réussie');
         }
     }
 
-    public function postManga($id) {
+    public function createManga($id, $body) {
         $serie = $this->model->getById($id);
         if( !$serie ){
             throw new RestException("Aucune série correspondant à l'id",404);
@@ -200,14 +211,41 @@ class SerieController extends CoreController{
             }
 
             $title = $utilities->hyphenize($serie['title']);
-            $filename = $title . '/' . $title . '-' . $_POST['volume'] . strrchr($image['name'], '.') ;
+            $filename = $title . '/' . $title . '-' . $body['volume'] . strrchr($image['name'], '.') ;
             $utilities->uploadImage($image,$title,$filename);
 
         }
         $mangaModel = new MangaModel();
-        $mangaModel->createManga($id, $_POST['volume'], $_POST['releaseDate'],$_POST['stock'],$filename);
+        $mangaModel->createManga($id, $body['volume'], $body['releaseDate'], $body['stock'], $filename);
 
 
+    }
+
+    public function modifyManga($idSerie, $idManga, $body) {
+        $mangaModel = new MangaModel();
+        $manga = $mangaModel->getById($idManga);
+
+        //we initialize with the current value to not change it in case there's no new image uploaded
+        $filename = $manga['image'];
+
+        if (isset($_FILES['cover'])){
+            $image = $_FILES['cover'];
+
+            $utilities = new Utilities();
+            try {
+                $utilities->checkImage($image);
+            } catch (RestException $e) {
+                throw new RestException($e->getMessage(),$e->getCode());
+            }
+
+            $title = $utilities->hyphenize($manga['serie']);
+            $filename = $title . '/' . $title . '-' . $manga['volume'] . strrchr($image['name'], '.') ;
+            $utilities->uploadImage($image,$title,$filename);
+
+        }
+
+        $mangaModel = new MangaModel();
+        $mangaModel->modifyManga($idSerie, $idManga, $body['release_date'], $body['stock'], $filename);
     }
 
     public function getReviews($id) {
@@ -225,7 +263,7 @@ class SerieController extends CoreController{
         }
     }
 
-    public function postReview($id, $body) {
+    public function createReview($id, $body) {
 
         if( empty($body['token']) || empty($body['rating']) ) {
             throw new RestException('Paramètres attendu: "token" et "rating".', 401);
@@ -234,7 +272,7 @@ class SerieController extends CoreController{
         $auth = new Auth();
 
         try {
-            $user = $auth->getUser($_POST['token']);
+            $user = $auth->getUser($body['token']);
         } catch (Exception $e) {
             throw new RestException("Erreur avec le token", 401);
         }
@@ -253,7 +291,7 @@ class SerieController extends CoreController{
         ]);
     }
 
-    public function putRating($id, $body) {
+    public function modifyRating($id, $body) {
 
         if( empty($body['token']) || empty($body['rating']) ) {
             throw new RestException('Paramètres attendu: "token" et "rating".', 401);
@@ -281,12 +319,12 @@ class SerieController extends CoreController{
         ]);
     }
 
-    public function putReview($id, $body) {
+    public function modifyReview($id, $body) {
 
         $auth = new Auth();
 
         try {
-            $user = $auth->getUser($_POST['token']);
+            $user = $auth->getUser($body['token']);
         } catch (Exception $e) {
             throw new RestException("Erreur d'authentication", 401);
         }
@@ -304,10 +342,9 @@ class SerieController extends CoreController{
 
     public function delete($id){
         $result = $this->model->delete($id);
-        if(!$result) {
-            throw new RestException('Erreur SQL',400);
-        } else {
-            $this->sendResponse(201,'Supression réussie');
-        }
+
+        $this->sendResponse(201,'Supression réussie');
     }
+
+
 }
