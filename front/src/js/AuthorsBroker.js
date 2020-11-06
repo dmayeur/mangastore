@@ -21,7 +21,7 @@ export class AuthorsBroker extends BrokerCore {
         return await this.APICommunicator.putRequest('/authors/'+id,objectData)
     }
 
-    async delete(id) {
-        return await this.APICommunicator.deleteRequest('/authors/'+id)
+    async delete(id, token) {
+        return await this.APICommunicator.deleteRequest('/authors/'+id, token)
     }
 }

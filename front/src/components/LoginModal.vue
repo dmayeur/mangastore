@@ -47,6 +47,7 @@
                         <div class='button-container'>
                             <Button type="submit">Connexion</Button>
                         </div>
+                        <small>Pour des soucis de test, le compte <strong>Toto</strong> avec le mot de passe <strong>Test01</strong> est un compte admin. </small>
                     </form>
                 </section>
                 <footer class="modal-footer">
@@ -131,6 +132,7 @@ export default {
     box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
 
 }
+
 .modal-header{
     display:flex;
     justify-content:space-between;
@@ -148,6 +150,10 @@ export default {
     margin: 0 auto;
     padding: 20px 10px;
 
+}
+
+small {
+    margin-bottom: 10px;
 }
 
 .btn-close {
@@ -172,14 +178,6 @@ export default {
     align-content:center;
 }
 
-label, input {
-    // display:block;
-    // text-align:left;
-    //
-    // width:100%;
-    // margin:0;
-}
-
 input {
     @include input-field;
 }
@@ -188,8 +186,7 @@ p {
     margin-bottom:30px;
 }
 
-
-
+//for the icons next to the inputs
 input {
     padding: 5px;
     border:1px solid black;
@@ -211,7 +208,7 @@ input {
 /* ===================================================
                 DESKTOPS - 992 PX AND UP
 ================================================== */
-@media screen and (min-width: 992px) {
+@include desktop {
     .modal {
         width:500px;
     }

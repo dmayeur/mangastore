@@ -20,6 +20,7 @@ export default {
         Button
     },
     methods: {
+        //method to display the image with a fallback in case it fails
         getImgPath(image) {
             try {
                 return require('../media/covers/'+image);
@@ -28,6 +29,7 @@ export default {
             }
 
         },
+        //add an item to the cart using the store
         addCart(){
             this.$store.dispatch('addCart', {id: this.manga.id ,quantity: 1});
         }

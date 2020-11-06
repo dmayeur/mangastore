@@ -25,7 +25,7 @@ export class CategoriesBroker extends BrokerCore {
         return await this.APICommunicator.putRequest('/categories/'+id, data)
     }
 
-    async delete(id) {
-        return await this.APICommunicator.deleteRequest('/categories/'+id)
+    async delete(id, token) {
+        return await this.APICommunicator.deleteRequest('/categories/'+id, token)
     }
 }

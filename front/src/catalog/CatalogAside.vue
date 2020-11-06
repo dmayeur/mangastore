@@ -20,7 +20,7 @@
                 Trier par
             </div>
 
-            <ul>
+            <ul class="catalog-search--sorting">
                 <li>
                     <input type="radio" id="alphabetical" name="sort" value="alphabetical" v-model="sortBy" @change="onInputChange">
                     <label for="alphabetical">Ordre alphabétique</label>
@@ -194,18 +194,6 @@ aside {
     background: transparent;
 }
 
-
-.catalog-search--item {
-    li label {
-        padding-left:5px;
-    }
-
-    li:not(:last-child) {
-        margin-bottom:0.8rem;
-    }
-}
-
-
 .catalog-search--header {
 
     border: 1px solid #000;
@@ -217,10 +205,21 @@ aside {
 
 }
 
+.catalog-search--item, .catalog-search--sorting  {
+    li label {
+        padding-left:5px;
+    }
+
+    li:not(:last-child) {
+        margin-bottom:0.8rem;
+    }
+}
+
+
 /* ===================================================
                 DESKTOPS - 992 PX AND UP
 ================================================== */
-@media screen and (min-width: 992px) {
+@include desktop {
     aside {
         margin-left:20px;
     }

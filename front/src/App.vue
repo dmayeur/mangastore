@@ -19,14 +19,11 @@
                 <li><router-link to="/panier"><i class="fas fa-shopping-cart"></i><span class="price">{{cartPrice}}€ ({{cartNbItems}})</span></router-link></li>
             </ul>
         </nav>
-
     </header>
-
 
     <div class="container">
         <router-view :search="search"/>
     </div>
-
 
     <footer>
         <nav>
@@ -126,7 +123,7 @@ body {
     background-color: $secondary-color;
 }
 
-h1, h2, h3, nav ul li a {
+h1, h2, h3, nav ul li a, .admin a {
     font-family: $title-font;
 }
 
@@ -152,7 +149,7 @@ h1, h2, h3, nav ul li a {
 }
 
 
-nav ul li a {
+nav ul li a, .admin a {
     color: $primary-color-text;
     font-size:1.8rem;
     display: block;
@@ -162,7 +159,7 @@ nav ul li a {
     position: relative;
 }
 
-nav ul li a:after {
+nav ul li a:after, .admin a:after {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -175,7 +172,7 @@ nav ul li a:after {
     height: 2px;
 }
 
-nav ul li {
+nav ul li, .admin {
     text-align: center;
 
     .fas {
@@ -184,11 +181,6 @@ nav ul li {
         margin-bottom: 5px;
     }
 }
-
-nav ul li a.selected:after {
-    width: 100%;
-}
-
 
 /* Search bar
 ================================================== */
@@ -236,7 +228,6 @@ footer nav {
         text-align: left;
     }
 
-
     /* ===================================================
                         HEADER
     ================================================== */
@@ -281,13 +272,13 @@ footer nav {
 
 }
 @media (hover:hover) {
-    nav ul li a,
-    nav ul li a:after {
+    nav ul li a, .admin a,
+    nav ul li a:after, .admin a:after {
       transition: all .5s;
     }
 
 
-    nav ul li a:hover:after {
+    nav ul li a:hover:after, .admin a:hover:after {
         width: 100%;
     }
 

@@ -21,8 +21,12 @@ export class SeriesBroker extends BrokerCore {
         return await this.APICommunicator.postRequest('/series/'+id+'/mangas',datas);
     }
 
-    async delete(id) {
-        return await this.APICommunicator.deleteRequest('/series/'+id)
+    async modifyManga(id, idManga, datas) {
+        return await this.APICommunicator.putRequest('/series/' + id + '/mangas/' + idManga,datas);
+    }
+
+    async delete(id, token) {
+        return await this.APICommunicator.deleteRequest('/series/'+id, token)
     }
 
     async createRating(id,datas) {
@@ -41,8 +45,17 @@ export class SeriesBroker extends BrokerCore {
         return await this.APICommunicator.postRequest('/series/'+id+'/categories', datas)
     }
 
-    async deleteCategory(id,datas) {
+
+    async createAuthor(id, datas) {
+        return await this.APICommunicator.postRequest('/series/'+id+'/authors', datas)
+    }
+
+    async deleteCategory(id, datas) {
         return await this.APICommunicator.deleteRequest('/series/'+id+'/categories',datas)
+    }
+
+    async deleteAuthor(id,idAuthor, datas) {
+        return await this.APICommunicator.deleteRequest('/series/'+id+'/authors/'+idAuthor,datas)
     }
 
     getById(id){

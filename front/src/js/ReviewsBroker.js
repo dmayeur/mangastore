@@ -12,4 +12,12 @@ export class ReviewsBroker extends BrokerCore {
     async getAll(idSerie) {
         return await this.APICommunicator.getRequest('/series/'+idSerie+'/reviews');
     }
+
+    async getAllAdmin() {
+        return await this.APICommunicator.getRequest('/reviews');
+    }
+
+    async removeReview(id, data) {
+        return await this.APICommunicator.putRequest('/reviews/'+id, data);
+    }
 }

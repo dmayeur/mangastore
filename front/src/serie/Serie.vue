@@ -50,18 +50,17 @@ export default {
         SerieReview
     },
     methods: {
+        //method to display the image with a fallback in case it fails 
         getImgPath(image) {
             try {
                 return require('../media/banner/'+image);
             } catch {
                 return require('../media/covers/empty.jpg');
             }
-        },
-        addCart(manga) {
-            console.log(manga);
         }
     },
-    mounted() {
+    created() {
+        //initializing the serie
         let series = new SeriesBroker();
         Promise.resolve(series.getById(this.id)).then( (response)=>{
                 this.serie=response.data;

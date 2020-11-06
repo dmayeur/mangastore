@@ -10,4 +10,11 @@ export class OrdersBroker extends BrokerCore {
         return await this.APICommunicator.postRequestJSON('/orders',items);
     }
 
+    async getAll(){
+        return await this.APICommunicator.getRequest('/orders');
+    }
+
+    async getById(id){
+        return await this.APICommunicator.getRequest('/orders/'+id);
+    }
 }

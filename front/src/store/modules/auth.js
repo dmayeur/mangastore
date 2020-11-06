@@ -1,5 +1,8 @@
+/**
+ * [auth module for the store]
+ * handles everything for the authentication
+ */
 
-// import { USER_REQUEST } from "../actions/user";
 import {Cookie} from '@/js/Cookie.js';
 import  {UsersBroker} from '@/js/UsersBroker.js';
 
@@ -27,6 +30,11 @@ const mutations = {
 };
 
 const actions = {
+    /**
+     * [authRequest log in function, set cookies in case of success]
+     * @param  {[object]} user   [containing login and password info]
+     * @return {[promise]}
+     */
     authRequest({ commit }, user){
         commit('authRequest');
         let usersBroker = new UsersBroker();
@@ -46,6 +54,10 @@ const actions = {
             });
         });
     },
+    /**
+     * [authLogout logout function which delete the cookies in case of log out]
+     * @return {[promise]}
+     */
     authLogout({ commit }){
           return new Promise(resolve => {
               commit('authLogout');
@@ -54,13 +66,39 @@ const actions = {
               resolve();
           });
     },
-    isAdmin({commit}){
-        return new Promise(resolve => {
-            commit('authCheck');
-            resolve();
+    isAdmin(){
+        let token = Cookie.getCookie('user-token');
+        let usersBroker = new UsersBroker();
+        return new Promise((resolve, reject) => {
+            Promise.resolve(usersBroker.isAdmin({token: token}))
+            .then( (response) => {
+                resolve(response);
+            })
+            .catch ((e) => {
+                reject(e);
+            });
         })
+    },
+    /**
+     * [getUser get the user from the server using the user-token cookie]
+     * @return {[promise]}
+     */
+    getUser() {
+        let token = Cookie.getCookie('user-token');
+        let usersBroker = new UsersBroker();
+        return new Promise((resolve, reject) => {
+            Promise.resolve(usersBroker.get(token))
+            .then( (response) => {
+                resolve(response);
+            })
+            .catch ((e) => {
+                reject(e);
+            });
+        });
     }
 };
+
+//getters for easier use throughout the app
 const getters = {
     isAuthenticated: state => !!state.token,
     authStatus: state => state.status,

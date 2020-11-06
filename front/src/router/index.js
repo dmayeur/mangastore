@@ -70,7 +70,9 @@ const routes = [
     path: '/admin/series',
     name: 'AdminSeries',
     meta: {
-      title: 'Admin - Series'
+      title: 'Admin - Series',
+      create: true,
+      modify: true
     },
     component: () => import('../admin/Admin.vue')
 },
@@ -94,7 +96,9 @@ const routes = [
     path: '/admin/editeurs',
     name: 'AdminEditors',
     meta: {
-      title: 'Admin'
+      title: 'Admin',
+      create: true,
+      modify: true
     },
     component: () => import('../admin/Admin.vue')
 },
@@ -118,7 +122,9 @@ const routes = [
     path: '/admin/categories',
     name: 'AdminCategories',
     meta: {
-      title: 'Admin - Categories'
+      title: 'Admin - Categories',
+      create: true,
+      modify: true
     },
     component: () => import('../admin/Admin.vue')
 },
@@ -142,7 +148,9 @@ const routes = [
     path: '/admin/auteurs',
     name: 'AdminAuthors',
     meta: {
-      title: 'Admin - Auteurs'
+      title: 'Admin - Auteurs',
+      create: true,
+      modify: true
     },
     component: () => import('../admin/Admin.vue')
 },
@@ -161,6 +169,34 @@ const routes = [
       title: 'Admin - Auteurs'
     },
     component: () => import('../admin/create/CreateAuthor.vue')
+},
+{
+    path: '/admin/critiques',
+    name: 'AdminReviews',
+    meta: {
+      title: 'Admin - Critiques',
+      create: false,
+      modify: false
+    },
+    component: () => import('../admin/Admin.vue')
+},
+{
+    path: '/admin/commandes',
+    name: 'AdminOrders',
+    meta: {
+      title: 'Admin - Commandes',
+      create: false,
+      modify: true
+    },
+    component: () => import('../admin/Admin.vue')
+},
+{
+    path: '/admin/commandes/:id',
+    name: 'AdminOrdersModify',
+    meta: {
+      title: 'Admin - Commandes'
+    },
+    component: () => import('../admin/modify/modifyOrder.vue')
 }
 ]
 

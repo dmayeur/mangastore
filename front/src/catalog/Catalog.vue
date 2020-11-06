@@ -70,11 +70,6 @@ export default {
         Loader,
         Button
     },
-    watch: {
-        search: function(val) {
-            console.log(val);
-        }
-    },
     methods: {
         onToggleFilter: function(){
             document.querySelector('#filter').checked = !document.querySelector('#filter').checked

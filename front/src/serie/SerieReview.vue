@@ -72,7 +72,6 @@ export default {
     watch: {
         //automatically fill the fields upon login
         isAuthenticated: function(val) {
-            //if the user logged in
             if(val) {
                 this.updateUserReview();
             }
@@ -98,9 +97,8 @@ export default {
         },
         sendReview() {
             let series = new SeriesBroker();
-            Promise.resolve(series.modifyReview(this.$route.params.id,{token: this.$store.getters.token, content: this.review})).then ( (response) => {
-                console.log(response);
-            });
+            //the review is always initialized because it needs to have a rating first, so that method is always called
+            Promise.resolve(series.modifyReview(this.$route.params.id,{token: this.$store.getters.token, content: this.review}));
         },
         rate(rating) {
             let series = new SeriesBroker();
@@ -108,6 +106,7 @@ export default {
             if(this.rating) { // if a rating already exist we use put method
                 Promise.resolve(series.modifyRating(this.$route.params.id,{token: this.$store.getters.token, rating: rating})).then ( (response) => {
                     this.rating = parseInt(response.data.rating);
+                    // we don't forget to update the star display if the update was done correctly to the server
                     this.checkStars();
                 });
             } else { // post otherwise
@@ -119,10 +118,10 @@ export default {
 
         },
         checkStars() {
+            //we select all the stars not forgetting we get them in reversed orders
             let stars = document.querySelectorAll('.fa-star');
 
             for(let i = 0; i < 5 ; i++) {
-                //we get the stars in a reversed order
                 if (5-i <= this.rating ) {
                     stars[i].classList.add('checked');
                 } else {
@@ -141,6 +140,7 @@ export default {
             this.reviews = [];
         })
 
+        //if the user is logged in
         if(this.$store.getters.isAuthenticated) {
             this.updateUserReview();
         }

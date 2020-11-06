@@ -1,6 +1,6 @@
 /**
  * [cart module]
- * cart store the items and quantity in localstorage
+ * cart store the items and quantity in localstorage, price is checked only through API calls
  */
 
 import  {MangasBroker} from '@/js/MangasBroker.js';
@@ -20,38 +20,71 @@ const mutations = {
         }
     },
     totalPrice: (state, price) => {
-        state.price = price
+        state.price = price;
     },
     nbItems: (state, nbItems) => {
-        state.nbItems = nbItems
+        state.nbItems = nbItems;
+    },
+    changeQuantity: (state, item) => {
+        state.items[item.id].quantity = parseInt(item.quantity);
+    },
+    deleteItem:  (state, item) => {
+        delete state.items[item.id];
+    },
+    deleteAllItems: (state) => {
+        state.items = {};
     }
 };
 
 const actions = {
-    addCart({ commit, dispatch }, item){
+    addCart({ commit, dispatch }, item ) {
         commit('addCart', item);
         let jsonData = JSON.stringify(state.items);
         window.localStorage.setItem('cart', jsonData);
         dispatch('getTotalPrice');
     },
     async getTotalPrice({ commit }) {
-        let items = JSON.parse(localStorage.getItem("cart")) || {};
         let mangas = new MangasBroker();
-        if(items){
-            let url="?id=";
-            url+=Object.keys(items).join('&id=');
-            let response = await mangas.getAll(url)
-            let totalPrice = 0;
-            let nbItems = 0;
-            for(let manga of Object.values(response.data)) {
-                totalPrice+=parseFloat(manga.price)*items[manga.id].quantity;
-                nbItems+=items[manga.id].quantity
-            }
-            commit('totalPrice',totalPrice.toFixed(2));
-            commit('nbItems',nbItems);
-        }
-    }
 
+        let totalPrice = 0;
+        let nbItems = 0;
+
+        //if the cart isn't empty
+        if(Object.keys(state.items).length){
+
+            //building the url with all the ids
+            let url="?id=";
+            url+=Object.keys(state.items).join('&id=');
+            let response = await mangas.getAll(url);
+
+            //calculating the price
+            for(let manga of Object.values(response.data)) {
+                totalPrice+=parseFloat(manga.price)*state.items[manga.id].quantity;
+                nbItems+=state.items[manga.id].quantity;
+            }
+
+        }
+
+        //updating the price
+        commit('totalPrice',totalPrice.toFixed(2));
+        commit('nbItems',nbItems);
+    },
+    changeQuantity({ commit, dispatch }, item) {
+        if(item.quantity <= 0) {
+            commit('deleteItem', item);
+        } else {
+            commit('changeQuantity', item);
+        }
+
+        let jsonData = JSON.stringify(state.items);
+        window.localStorage.setItem('cart', jsonData);
+        dispatch('getTotalPrice');
+    },
+    deleteAllItems({commit, dispatch}) {
+        commit('deleteAllItems');
+        window.localStorage.removeItem('cart');
+        dispatch('getTotalPrice');
+    }
 };
 
 const getters = {

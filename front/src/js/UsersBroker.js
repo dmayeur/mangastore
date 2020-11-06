@@ -14,4 +14,12 @@ export class UsersBroker extends BrokerCore {
 
     }
 
+    async isAdmin(data) {
+        return await this.APICommunicator.postRequest('/users/admin', data);
+    }
+
+    async get(token) {
+        return await this.APICommunicator.getRequest('/users/', token);
+    }
+
 }
