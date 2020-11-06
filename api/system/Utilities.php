@@ -5,6 +5,7 @@ class Utilities {
 
     }
 
+    //clean string in a meaninfulway for prettier filenames
     public function hyphenize($string) {
         return strtolower(
             preg_replace(
@@ -41,6 +42,7 @@ class Utilities {
         return preg_replace(array_keys($utf8), array_values($utf8), $text);
     }
 
+    //basic filecheck
     function checkImage($file){
         $taille_maxi = 100000000;
         $taille = filesize($file['tmp_name']);
@@ -51,7 +53,7 @@ class Utilities {
             '.jpg' => 1,
             '.jpeg' => 1
         ];
-        
+
         $extension = strrchr($file['name'], '.');
 
         if(!isset($extensions[$extension])){ //If wrong extension
@@ -68,6 +70,7 @@ class Utilities {
         $dir = "../front/src/media/covers/";
 
         //create the serie directory if it doesn't exist
+        //since we name it ourselves, we don't really care about replacing existing file, it will only happen in case you replace the file for an existing volume, which is fine
         if (!file_exists($dir. $title .'/')) {
             mkdir($dir . $title, 0755, true);
         }

@@ -44,12 +44,14 @@ class Database{
         return $query->fetch();
     }
 
+    //for postQueries, return the newly created id for further use
     public function postQuery(String $sql , $values) {
         $query = $this->db->prepare($sql);
         $query->execute($values);
         return $this->db->lastInsertId();
     }
 
+    //SQL code that doesn't fall in get or post
     public function executeSQL(String $sql , $values) {
         $query = $this->db->prepare($sql);
         return $query->execute($values);

@@ -63,9 +63,34 @@ class Request{
      *
      * @return mixed
      */
-    public function getMethod()
-    {
+    public function getMethod() {
         return $this->method;
     }
 
+    public function getToken() {
+        if($this->method == "GET") {
+            $header = apache_request_headers();
+
+            if(empty($header['token'])){
+                throw new RestException("Erreur d'authentication",401);
+            }
+
+            $token = $header['token'];
+        } else {
+            $body = $this->getRequest();
+            if($_SERVER['CONTENT_TYPE'] == "application/json") {
+                if(!isset($body->token)) {
+                    throw new RestException("Erreur d'authentication",401);
+                }
+                $token = $body->token;
+            } else {
+                if(!isset($body['token'])){
+                    throw new RestException("Erreur d'authentication",401);
+                }
+                $token = $body['token'];
+            }
+        }
+
+        return $token;
+    }
 }

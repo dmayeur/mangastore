@@ -82,4 +82,16 @@ class Auth {
         $object = $this->decode($header['token']);
         return $object->user;
     }
+
+    public function isAdmin($token) {
+        $object = $this->decode($token);
+        $userModel = new UserModel();
+        $user = $userModel->getById($object->user->id);
+        if($user['role'] == "admin") {
+            return true;
+        } else {
+            throw new RestException("Erreur d'authentication", 401);
+        }
+        exit();
+    }
 }

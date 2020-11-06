@@ -4,14 +4,6 @@ class RestException extends Exception {
         parent::__construct($message, $code);
     }
 
-    public function toJSON(){
-        $message = [
-            'error'=>$this->message
-        ];
-
-        return json_encode($message, JSON_FORCE_OBJECT);
-    }
-
     function customException($e) {
         //it's either an error we threw ourselves
         if($e instanceof RestException){
