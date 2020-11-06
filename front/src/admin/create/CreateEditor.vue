@@ -28,7 +28,7 @@ export default {
     methods: {
         onSubmit() {
             let editors = new EditorsBroker();
-            Promise.resolve(editors.create(this.$route.params.id,{editor: this.editor})).then( () => {
+            Promise.resolve(editors.create({editor: this.editor, token: this.$store.getters.token})).then( () => {
                 this.$router.go(-1);
             })
             .catch ((e) => {
@@ -37,7 +37,13 @@ export default {
                 }
             });
         }
-    }
+    },
+    beforeCreate() {
+        this.$store.dispatch('isAdmin')
+        .catch (() => {
+            this.$router.push('/');
+        })
+    },
 }
 </script>
 

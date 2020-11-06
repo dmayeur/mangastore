@@ -40,7 +40,7 @@ export default {
     },
     methods: {
         onSubmit() {
-            let category = {category: this.category};
+            let category = {category: this.category, token: this.$store.getters.token};
             if (this.categoryParent != -1){
                 category.categoryParent = this.categoryParent
             }
@@ -65,8 +65,13 @@ export default {
                     }
                 })
             }
-
         }
+    },
+    beforeCreate() {
+        this.$store.dispatch('isAdmin')
+        .catch (() => {
+            this.$router.push('/');
+        })
     },
     mounted() {
         let categories = new CategoriesBroker();

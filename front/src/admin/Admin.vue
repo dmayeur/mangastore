@@ -1,21 +1,22 @@
 <template lang="html">
-  <div class="">
+  <div>
       <h1>Bienvenue sur la page d'administration de mangastore !</h1>
       <p>Ici vous pouvez gérer le contenu de votre site selon votre besoin.</p>
       <nav>
           <ul>
               <li><router-link to="/admin/series">Séries</router-link></li>
-              <li>Commandes</li>
+              <li><router-link to="/admin/commandes">Commandes</router-link></li>
               <li><router-link to="/admin/editeurs">Editeurs</router-link></li>
               <li><router-link to="/admin/categories">Catégories</router-link></li>
-              <li>Reviews</li>
+              <li><router-link to="/admin/critiques">Critiques</router-link></li>
               <li><router-link to="/admin/auteurs">Auteurs</router-link></li>
           </ul>
       </nav>
-      <router-link :to="$route.path.replace(/\/+$/, '')+'/create'"><Button>Créer</Button></router-link>
+      <router-link :to="$route.path.replace(/\/+$/, '')+'/create'" v-if="create"><Button>Créer</Button></router-link>
       <AdminTable
         :header="tableHeader"
         :body="tableValues"
+        :modify="modify"
         @del="del"
       >
       </AdminTable>
@@ -27,6 +28,9 @@ import  {SeriesBroker} from '@/js/SeriesBroker.js';
 import  {EditorsBroker} from '@/js/EditorsBroker.js';
 import  {CategoriesBroker} from '@/js/CategoriesBroker.js';
 import  {AuthorsBroker} from '@/js/AuthorsBroker.js';
+import  {ReviewsBroker} from '@/js/ReviewsBroker.js';
+import  {OrdersBroker} from '@/js/OrdersBroker.js';
+
 import Button from '@/components/Button.vue';
 import AdminTable from '@/admin/AdminTable.vue';
 
@@ -35,6 +39,8 @@ export default {
         return {
             tableHeader: {},
             tableValues: {},
+            create: this.$route.meta.create, //some routes doesn't need a create or modify button (configured in the router)
+            modify: this.$route.meta.modify
         }
     },
     components: {
@@ -43,6 +49,7 @@ export default {
     },
     methods: {
         updateTable: function(response) {
+            //we separate the header and the values from the response
             this.tableHeader=[];
             this.tableValues=[];
             let arr=[];
@@ -56,6 +63,7 @@ export default {
             }
         },
         onChangeRoute: function(route){
+            //reload the table with the right values on route change
             switch (route) {
                 case 'AdminSeries': {
                     let series = new SeriesBroker();
@@ -109,13 +117,41 @@ export default {
                     });
                     break;
                 }
+                case 'AdminReviews': {
+                    let reviews = new ReviewsBroker();
+                    Promise.resolve(reviews.getAllAdmin())
+                    .then( (response) => {
+                        this.updateTable(response)
+                    })
+                    .catch ((e) => {
+                        if(e.response.data.errorMessage) {
+                            this.errorMessage = e.response.data.errorMessage
+                        }
+                    });
+                    break;
+                }
+                case 'AdminOrders': {
+                    let orders = new OrdersBroker();
+                    Promise.resolve(orders.getAll())
+                    .then( (response) => {
+                        this.updateTable(response);
+                    })
+                    .catch ((e) => {
+                        if(e.response.data.errorMessage) {
+                            this.errorMessage = e.response.data.errorMessage
+                        }
+                    });
+                    break;
+                }
             }
         },
         del(id, index){
+            //the API call depends of the URL
+            let token = {token: this.$store.getters.token};
             switch(this.$route.name) {
                 case 'AdminAuthors': {
                     let authors = new AuthorsBroker();
-                    Promise.resolve(authors.delete(id))
+                    Promise.resolve(authors.delete(id, token))
                     .then( () => {
                         this.tableValues.splice(index,1);
                     })
@@ -128,7 +164,7 @@ export default {
                 }
                 case 'AdminSeries': {
                     let series = new SeriesBroker();
-                    Promise.resolve(series.delete(id))
+                    Promise.resolve(series.delete(id, token))
                     .then( () => {
                         this.tableValues.splice(index,1);
                     })
@@ -141,7 +177,7 @@ export default {
                 }
                 case 'AdminCategories': {
                     let categories = new CategoriesBroker();
-                    Promise.resolve(categories.delete(id))
+                    Promise.resolve(categories.delete(id, token))
                     .then( () => {
                         this.tableValues.splice(index,1);
                     })
@@ -150,9 +186,42 @@ export default {
                             this.errorMessage = e.response.data.errorMessage
                         }
                     });
+                    break;
+                }
+                case 'AdminEditors': {
+                    let editors = new EditorsBroker();
+                    Promise.resolve(editors.delete(id, token))
+                    .then( () => {
+                        this.tableValues.splice(index,1);
+                    })
+                    .catch ((e) => {
+                        if(e.response.data.errorMessage) {
+                            this.errorMessage = e.response.data.errorMessage
+                        }
+                    });
+                    break;
+                }
+                case 'AdminReviews': {
+                    let reviews = new ReviewsBroker();
+                    Promise.resolve(reviews.removeReview(id, token))
+                    .then( () => {
+                        this.tableValues.splice(index,1);
+                    })
+                    .catch ((e) => {
+                        if(e.response.data.errorMessage) {
+                            this.errorMessage = e.response.data.errorMessage
+                        }
+                    });
+                    break;
                 }
             }
         }
+    },
+    beforeCreate() {
+        this.$store.dispatch('isAdmin')
+        .catch (() => { //we only care about errors
+            this.$router.push('/');
+        })
     },
     mounted(){
         //we initialize the table when it's mounted
@@ -162,6 +231,8 @@ export default {
         //everytime we change route, we'll reload the table
         $route: function(newRoute) {
             this.onChangeRoute(newRoute.name);
+            this.create = newRoute.meta.create;
+            this.modify = newRoute.meta.modify;
         }
     }
 }

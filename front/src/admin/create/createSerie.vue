@@ -114,6 +114,7 @@ export default {
                 categories: this.categoriesChecked,
                 authors: authors,
                 price: this.price,
+                token: this.$store.getters.token
             }
 
             let series = new SeriesBroker();
@@ -141,6 +142,12 @@ export default {
                 }
             });
         }
+    },
+    beforeCreate() {
+        this.$store.dispatch('isAdmin')
+        .catch (() => {
+            this.$router.push('/');
+        })
     },
     mounted(){
         let editors = new EditorsBroker();

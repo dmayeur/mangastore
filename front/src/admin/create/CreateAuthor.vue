@@ -33,7 +33,7 @@ export default {
         onSubmit() {
             let authors = new AuthorsBroker();
             if(this.edit){
-                Promise.resolve(authors.modify(this.$route.params.id,{author: this.author})).then ( () => {
+                Promise.resolve(authors.modify(this.$route.params.id,{author: this.author, token: this.$store.getters.token})).then ( () => {
                     this.$router.go(-1);
                 })
                 .catch ((e) => {
@@ -42,7 +42,7 @@ export default {
                     }
                 });
             } else {
-                Promise.resolve(authors.create({author: this.author})).then( () => {
+                Promise.resolve(authors.create({author: this.author, token: this.$store.getters.token})).then( () => {
                     this.$router.go(-1);
                 })
                 .catch ((e) => {
@@ -53,6 +53,12 @@ export default {
             }
 
         }
+    },
+    beforeCreate() {
+        this.$store.dispatch('isAdmin')
+        .catch (() => {
+            this.$router.push('/');
+        })
     },
     mounted() {
         if( this.$route.name.includes('Modify') ){

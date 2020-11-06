@@ -23,8 +23,11 @@
                     >
                         {{value || "-"}}
                     </td>
-                    <td>
+                    <td v-if="modify">
                         <router-link :to="$route.path+'/'+line.id"><i class="fas fa-pen-fancy"></i></router-link>
+                        <i class="fas fa-trash-alt" @click="del(index)"></i>
+                    </td>
+                    <td v-else>
                         <i class="fas fa-trash-alt" @click="del(index)"></i>
                     </td>
                 </tr>
@@ -39,7 +42,8 @@
 export default {
     props: {
         header: Object,
-        body: Object
+        body: Object,
+        modify: Boolean
     },
     methods: {
         del(index) {

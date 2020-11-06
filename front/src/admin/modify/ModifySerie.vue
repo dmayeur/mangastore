@@ -29,22 +29,22 @@
 
     <section class="serie-mangas-modify">
         <h2>Modifier un volume</h2>
-        <article v-for="manga in serie.mangas" :key="manga.id">
+        <article v-for="(manga, index) in serie.mangas" :key="manga.id">
             <img :src="getImgPath(manga.image)" :alt="`Couverture de ${manga.title}`">
             <p>Volume {{manga.volume}}</p>
             <div class="input-item">
                 <label for="cover">Couverture du manga:</label>
-                <input type="file" name="cover">
+                <input type="file" name="cover" @change="processFileModify($event, index)">
             </div>
             <div class="input-item">
                 <label for="releaseDate">Date de sortie</label>
-                <input type="date" name="releaseDate" :value="manga.release_date">
+                <input type="date" name="releaseDate" v-model="manga.release_date">
             </div>
             <div class="input-item">
                 <label for="stock">Stock:</label>
-                <input type="number" name="stock" :value="manga.stock">
+                <input type="number" name="stock" v-model="manga.stock">
             </div>
-            <Button>
+            <Button @click="modifyManga(manga, index)">
                 Editer le volume
             </Button>
         </article>
@@ -94,6 +94,9 @@
             <select name="author" id="author" v-model="author">
                 <option v-for="author in authors" :key="author.id" :value="`${author.id}`">{{ author.name }}</option>
             </select>
+            <Button @click="addAuthor">
+                Ajouter l'auteur
+            </Button>
         </div>
     </section>
 </div>
@@ -111,6 +114,8 @@ export default {
         return {
             serie: {},
             mangaToAdd: {},
+            mangaToAddModify: {},
+            mangaToAddModifyCover: {},
             categories: {},
             categoriesChecked: [],
             authors: {},
@@ -124,17 +129,34 @@ export default {
         processFile(event) {
             this.mangaToAdd.cover = event.target.files[0]
         },
+        processFileModify(event, index) {
+            this.mangaToAddModifyCover[index] = event.target.files[0]
+        },
         addManga() {
             let series = new SeriesBroker();
-            Promise.resolve(series.createManga(this.$route.params.id,this.mangaToAdd))
-            .then( (response) => {
-                console.log(response);
-            })
+            Promise.resolve(series.createManga(this.$route.params.id,{...this.mangaToAdd, token: this.$store.getters.token}))
             .catch ((e) => {
                 if(e.response.data.errorMessage) {
                     this.errorMessage = e.response.data.errorMessage
                 }
             });
+        },
+        modifyManga(manga, index) {
+            let series = new SeriesBroker();
+
+            let data = {
+                ...manga,
+                cover: this.mangaToAddModifyCover[index],
+                token: this.$store.getters.token
+            }
+
+            Promise.resolve(series.modifyManga(this.$route.params.id, manga.id, data))
+            .catch ((e) => {
+                if(e.response.data.errorMessage) {
+                    this.errorMessage = e.response.data.errorMessage
+                }
+            });
+
         },
         getImgPath(image) {
             try {
@@ -158,11 +180,38 @@ export default {
         addCategories() {
             let datas = {
                 categories: this.categoriesChecked,
+                token: this.$store.getters.token
             }
 
             let series = new SeriesBroker();
-            Promise.resolve(series.createCategories(this.$route.params.id, datas)).then( (response) => {
-                console.log(response);
+            Promise.resolve(series.createCategories(this.$route.params.id, datas))
+            .catch ((e) => {
+                if(e.response.data.errorMessage) {
+                    this.errorMessage = e.response.data.errorMessage
+                }
+            });
+        },
+        deleteAuthor(index) {
+            let series = new SeriesBroker();
+            Promise.resolve(series.deleteAuthor(this.$route.params.id, this.serie.authors[index].id,{ token: this.$store.getters.token }))
+            .then( () => {
+                delete this.serie.authors[index]
+            })
+            .catch ((e) => {
+                if(e.response.data.errorMessage) {
+                    this.errorMessage = e.response.data.errorMessage
+                }
+            });
+        },
+        addAuthor() {
+            let datas = {
+                author: this.author,
+                token: this.$store.getters.token
+            }
+
+            let series = new SeriesBroker();
+            Promise.resolve(series.createAuthor(this.$route.params.id, datas)).then( () => {
+                this.$forceUpdate();
             })
             .catch ((e) => {
                 if(e.response.data.errorMessage) {
@@ -170,6 +219,12 @@ export default {
                 }
             });
         }
+    },
+    beforeCreate() {
+        this.$store.dispatch('isAdmin')
+        .catch (() => {
+            this.$router.push('/');
+        })
     },
     mounted() {
         let series = new SeriesBroker();

@@ -15,13 +15,13 @@
 
     <section>
         <h2>Prix de l'éditeur:</h2>
-        <article v-for="price in editor.prices" :key="price.code">
+        <article v-for="(price, index) in editor.prices" :key="price.code">
             <p>Code prix: {{ price.price_code }}</p>
             <div class="input-item">
                 <label :for="'price-' + price.price_code">Prix: </label>
                 <input type="text" name="price" :id="'price-' + price.price_code" v-model="price.price">
             </div>
-            <Button>Changer le prix</Button>
+            <Button @click="changePrice(index)">Changer le prix</Button>
         </article>
     </section>
 
@@ -59,7 +59,7 @@ export default {
     methods: {
         changeEditor() {
             let editors = new EditorsBroker();
-            Promise.resolve(editors.modify(this.$route.params.id, {editor: this.editor.name}))
+            Promise.resolve(editors.modify(this.$route.params.id, {editor: this.editor.name, token: this.$store.getters.token}))
             .then ( () => {
                 this.$router.go(-1);
             })
@@ -71,10 +71,19 @@ export default {
         },
         addPrice() {
             let editors = new EditorsBroker();
-            Promise.resolve(editors.createPrice(this.$route.params.id, {price: this.price, priceCode: this.priceCode}))
-            .then ( () => {
-                // this.$router.go(-1);
+            Promise.resolve(editors.createPrice(this.$route.params.id, {price: this.price, priceCode: this.priceCode, token: this.$store.getters.token}))
+            .then ( (response) => {
+                this.editor.prices.push = response.data;
             })
+            .catch ((e) => {
+                if(e.response.data.errorMessage) {
+                    this.errorMessage = e.response.data.errorMessage
+                }
+            });
+        },
+        changePrice(index) {
+            let editors = new EditorsBroker();
+            Promise.resolve(editors.modifyPrice(this.$route.params.id, this.editor.prices[index].price_code, {price: this.editor.prices[index].price, token: this.$store.getters.token}))
             .catch ((e) => {
                 if(e.response.data.errorMessage) {
                     this.errorMessage = e.response.data.errorMessage
@@ -83,6 +92,12 @@ export default {
         }
     },
     beforeCreate() {
+        this.$store.dispatch('isAdmin')
+        .catch (() => {
+            this.$router.push('/');
+        })
+    },
+    mounted() {
         let editors = new EditorsBroker();
         Promise.resolve(editors.getById(this.$route.params.id)).then( (response) => {
             this.editor = response.data;
