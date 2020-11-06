@@ -1,5 +1,9 @@
 <?php
 
+/*
+The place where we declare all the routes
+ */
+
 $request = rtrim( $_SERVER['REDIRECT_URL'] , '/');
 $request = explode("/",$request);
 $request = array_splice($request, 3);
@@ -8,88 +12,108 @@ $request = implode("/",$request);
 
 $router = new Router($request);
 
+
 /**
 * SERIES ROUTES
 */
 
-$router->get('/series', [$serieController,"getAllBasicInfos"]);
-$router->get('/series/:id', [$serieController,"getById"]);
-$router->get('/admin/series', [$serieController,"getAllAdmin"]);
-$router->get('series/:id/reviews', [$serieController,"getReviews"]);
+$router->get('/series', ['serieController',"getAllBasicInfos"]);
+$router->get('/series/:id', ['serieController',"getById"]);
+$router->get('/admin/series', ['serieController',"getAllAdmin"]); //this is just an admin route for prettier display purpose, no sensitive info is on there so the route isn't admin only
+$router->get('series/:id/reviews', ['serieController',"getReviews"]);
 
-$router->post('series',[$serieController,"create"]);
-$router->post('series/:id/categories',[$serieController,"createCategories"]);
-$router->post('series/:id/reviews', [$serieController,"postReview"]);
-$router->post('series/:id/mangas',[$serieController,"postManga"]);
+$router->post('series',['serieController',"create"], ['admin' => true]);
+$router->post('series/:id/authors', ['serieController',"createAuthor"], ['admin' => true]);
+$router->post('series/:id/categories',['serieController',"createCategories"], ['admin' => true]);
+$router->post('series/:id/reviews', ['serieController',"createReview"]);
+$router->post('series/:id/mangas',['serieController',"createManga"], ['admin' => true]);
 
-$router->put('series/:id',[$serieController,"modify"]);
-$router->put('series/:id/ratings', [$serieController,"putRating"]);
-$router->put('series/:id/reviews',[$serieController, "putReview"]);
+$router->put('series/:id',['serieController',"modify"], ['admin' => true]);
+$router->put('series/:id/mangas/:idManga',['serieController',"modifyManga"], ['admin' => true]);
+$router->put('series/:id/ratings', ['serieController',"modifyRating"]);
+$router->put('series/:id/reviews',['serieController', "modifyReview"]);
 
-$router->delete('series/:id', [$serieController,"delete"]);
-$router->delete('series/:id/categories', [$serieController, "deleteCategory"]);
+$router->delete('series/:id', ['serieController',"delete"]);
+$router->delete('series/:id/authors/:idAuthor', ['serieController',"deleteAuthor"], ["admin" => true]);
+$router->delete('series/:id/categories', ['serieController', "deleteCategory"], ["admin" => true]);
 
 
 /**
 * MANGAS ROUTES
 */
 
-$router->get('/mangas', [$mangaController,"getAll"]);
+$router->get('/mangas', ['mangaController',"getAll"]);
 
 
 /**
 * CATEGORIES ROUTES
 */
 
-$router->get('/categories', [$categoryController,"getAll"]);
-$router->get('/categories/:id', [$categoryController,"getById"]);
-$router->get('/admin/categories', [$categoryController,"getAdmin"]);
+$router->get('/categories', ['categoryController',"getAll"]);
+$router->get('/categories/:id', ['categoryController',"getById"]);
+$router->get('/admin/categories', ['categoryController',"getAdmin"]);
 
-$router->post('/categories', [$categoryController,"create"]);
+$router->post('/categories', ['categoryController',"create"], ['admin' => true]);
 
-$router->put('/categories/:id', [$categoryController,"modify"]);
+$router->put('/categories/:id', ['categoryController',"modify"], ['admin' => true]);
 
-$router->delete('/categories/:id', [$categoryController,"delete"]);
+$router->delete('/categories/:id', ['categoryController',"delete"], ['admin' => true]);
 
 
 /**
 * EDITORS ROUTES
 */
 
-$router->get('/editors', [$editorController,"getAll"]);
-$router->get('/editors/:id', [$editorController,"getById"]);
-$router->get('/editors/:id/prices', [$editorController,"getPrice"]);
+$router->get('/editors', ['editorController',"getAll"]);
+$router->get('/editors/:id', ['editorController',"getById"]);
+$router->get('/editors/:id/prices', ['editorController',"getPrice"]);
 
-$router->post('/editors', [$editorController,"create"]);
-$router->post('/editors/:id/prices', [$editorController, "createPrice"]);
+$router->post('/editors', ['editorController',"create"], ['admin' => true]);
+$router->post('/editors/:id/prices', ['editorController', "createPrice"], ['admin' => true]);
 
-$router->put('/editors/:id', [$editorController,"modify"]);
+$router->put('/editors/:id', ['editorController',"modify"], ['admin' => true]);
+$router->post('/editors/:id/prices/:idPrice', ['editorController', "modifyPrice"], ['admin' => true]);
 
-$router->delete('/editors/:id', [$editorController,"delete"]);
+$router->delete('/editors/:id', ['editorController',"delete"], ['admin' => true]);
 
 
 /**
 *  AUTHORS ROUTES
 */
-$router->get('/authors', [$authorController,"getAll"]);
-$router->get('/authors/:id', [$authorController,"getById"]);
+$router->get('/authors', ['authorController',"getAll"]);
+$router->get('/authors/:id', ['authorController',"getById"]);
 
-$router->post('/authors', [$authorController,"create"]);
+$router->post('/authors', ['authorController',"create"], ['admin' => true]);
 
-$router->put('/authors/:id', [$authorController,"modify"]);
+$router->put('/authors/:id', ['authorController',"modify"], ['admin' => true]);
 
-$router->delete('/authors/:id', [$authorController,"delete"]);
+$router->delete('/authors/:id', ['authorController',"delete"], ['admin' => true]);
 
 
 /**
 *  USERS ROUTES
 */
+$router->get('/users', ['userController',"getUser"]);
+$router->get('/users/series/:id/reviews', ['userController',"getReview"]);
 
-$router->get('users/series/:id/reviews', [$userController,"getReview"]);
-
-$router->post('/users/admin', [$userController, 'isAdmin']);
-$router->post('/users/creation', [$userController,'createAccount']);
-$router->post('/users/authentication', [$userController,'login']);
+$router->post('/users/admin', ['userController', 'isAdmin'], ['admin' => true]);
+$router->post('/users/creation', ['userController','createAccount']);
+$router->post('/users/authentication', ['userController','login']);
 
 
-$router->post('/orders', [$orderController,"create"]);
+/**
+*  ORDERS ROUTES
+*/
+$router->get('/orders', ['orderController',"getAll"]);
+$router->get('/orders/:id', ['orderController', "getById"]);
+
+$router->post('/orders', ['orderController',"create"]);
+
+
+/**
+* reviews ROUTES
+*/
+
+$router->get('/reviews', ['reviewController',"getAll"]);
+
+$router->delete('admin/reviews/:id', ['reviewController',"delete"], ['admin' => true]);

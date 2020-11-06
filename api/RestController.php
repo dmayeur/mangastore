@@ -1,6 +1,12 @@
 <?php
+/**
+ * RESTCONTROLLER
+ * This is where all the request goes, so we just need to import everything and let the router decide where the stuff goes
+ */
+
 include 'vendor/autoload.php';
 
+// load all the controllers, models and system classes
 spl_autoload_register(function ($class) {
     if (file_exists('system/' . $class . '.php')) {
         include_once  './system/' . $class . '.php';
@@ -11,28 +17,14 @@ spl_autoload_register(function ($class) {
     }
 });
 
-set_exception_handler('RestException::customException');
-
-
-// we create a request object that contains all the request info
-$request = new Request();
-
-
-// we instantiate all the controllers because I didn't find any other way to have objects with my router
-$serieController = new SerieController();
-$categoryController = new CategoryController();
-$editorController = new EditorController();
-$userController = new UserController();
-$authorController = new AuthorController();
-$mangaController = new MangaController();
-$orderController = new OrderController();
+set_exception_handler('RestException::customException'); //our custom exception handler
 
 //the routes of our router
 include 'config/routes.php';
 
 //special rule for our vue front server
 header("Access-Control-Allow-Origin: http://localhost:80");
-// header("Content-Type: application/json");
+header("Content-Type: application/json");
 
 //Match the URL to a route
 $router->run();
