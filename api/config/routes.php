@@ -20,7 +20,7 @@ $router = new Router($request);
 $router->get('/series', ['serieController',"getAllBasicInfos"]);
 $router->get('/series/:id', ['serieController',"getById"]);
 $router->get('/admin/series', ['serieController',"getAllAdmin"]); //this is just an admin route for prettier display purpose, no sensitive info is on there so the route isn't admin only
-$router->get('series/:id/reviews', ['serieController',"getReviews"]);
+$router->get('/series/:id/reviews', ['serieController',"getReviews"]);
 
 $router->post('series',['serieController',"create"], ['admin' => true]);
 $router->post('series/:id/authors', ['serieController',"createAuthor"], ['admin' => true]);
@@ -109,6 +109,9 @@ $router->get('/orders/:id', ['orderController', "getById"]);
 
 $router->post('/orders', ['orderController',"create"]);
 
+$router->put('/orders/:id',['orderController', "modify"], ['admin' => true]);
+
+$router->delete('/orders/:id', ['orderController', 'delete'], ['admin' => true]);
 
 /**
 * reviews ROUTES

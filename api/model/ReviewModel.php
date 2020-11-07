@@ -60,4 +60,13 @@ class ReviewModel {
 
         return $this->db->getQueryOne($query, [$serieId, $userId]);
     }
+
+    public function deleteReview($idReview) {
+        $query = " UPDATE REVIEWS
+            SET content = NULL
+            WHERE id = ?
+        ";
+
+        return $this->db->executeSQL($query, [$idReview]);
+    }
 }

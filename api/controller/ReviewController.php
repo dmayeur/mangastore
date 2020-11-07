@@ -21,13 +21,15 @@ class ReviewController extends CoreController{
     }
 
 
-
+    /**
+     * [delete the method just remove the review but keep the rating]
+     */
     public function delete($id) {
-        $result = $this->model->delete($id);
+        $result = $this->model->deleteReview($id);
         if(!$result) {
-            throw new RestException('Erreur SQL',400);
+            throw new RestException('Erreur SQL',500);
         } else {
-            $this->sendResponse(201,'Supression réussie');
+            $this->sendResponse(204,'Supression réussie');
         }
     }
 }

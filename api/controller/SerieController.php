@@ -252,9 +252,9 @@ class SerieController extends CoreController{
 
         $reviewModel = new ReviewModel();
 
-        $result = $reviewModel->getAll($id);
+        $results = $reviewModel->getAll($id);
 
-        if($result) {
+        if($results) {
             $this->sendResponse(200, $results);
         } else {
             $this->sendResponse(404, [
@@ -264,7 +264,6 @@ class SerieController extends CoreController{
     }
 
     public function createReview($id, $body) {
-
         if( empty($body['token']) || empty($body['rating']) ) {
             throw new RestException('Paramètres attendu: "token" et "rating".', 401);
         }
@@ -280,7 +279,7 @@ class SerieController extends CoreController{
         $reviewModel = new ReviewModel();
 
         try {
-            $result = $reviewModel->create($id, $user['id'], $body['rating']);
+            $result = $reviewModel->create($id, $user->id, $body['rating']);
         } catch (Exception $e) {
             throw new RestException("Série ou utilisateur inexistant", 401);
         }

@@ -23,6 +23,9 @@ class OrderController extends CoreController {
     public function getById($id) {
         $result = $this->model->getbyId($id);
 
+        $result['items'] = $this->model->getItems($id);
+
+
         if($result) {
             $this->sendResponse(200, $result);
         } else {
@@ -56,6 +59,18 @@ class OrderController extends CoreController {
         //we finally save the price in the DB
         $this->model->changeTotalPrice($totalPrice['total_price'], $orderId);
 
-        $this->sendResponse(200, 'Création de la commande réussie');
+        $this->sendResponse(201, 'Création de la commande réussie');
+    }
+
+    public function modify($id, $body) {
+        $this->model->modify($id, $body['status']);
+
+        $this->sendResponse(204, 'Modification du status réalisé avec succès');
+    }
+
+    public function delete($id) {
+        $this->model->delete($id);
+
+        $this->sendResponse(204,'Supression réussie');
     }
 }
