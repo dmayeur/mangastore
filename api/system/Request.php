@@ -38,7 +38,6 @@ class Request{
             }
 
         } else {
-
             if($_SERVER['CONTENT_TYPE'] == "application/json"){
                 return json_decode(file_get_contents('php://input'));
             } else {
@@ -48,7 +47,7 @@ class Request{
                     if(is_array($value)){
                         $body[$key] = explode(',',htmlspecialchars(implode(',', $value)));
                     } else {
-                        $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+                        $body[$key] = htmlspecialchars($_POST[$key]);
                     }
                 }
 

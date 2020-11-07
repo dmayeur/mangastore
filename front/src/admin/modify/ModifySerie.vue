@@ -289,6 +289,10 @@ article {
     margin-bottom: 50px;
 }
 
+input {
+    margin-bottom: 10px;
+}
+
 @include tablet {
     img{
         float:left;

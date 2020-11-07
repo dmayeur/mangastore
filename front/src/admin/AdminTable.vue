@@ -1,5 +1,5 @@
 <template lang="html">
-    <div>
+    <div class="table-container">
         <table id="table" class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -54,6 +54,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.table-container {
+    overflow-x: auto;
+}
 
 table {
     width:100%;

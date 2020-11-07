@@ -214,6 +214,19 @@ export default {
                     });
                     break;
                 }
+                case 'AdminOrders': {
+                    let orders = new OrdersBroker();
+                    Promise.resolve(orders.delete(id, token))
+                    .then( () => {
+                        this.tableValues.splice(index,1);
+                    })
+                    .catch ((e) => {
+                        if(e.response.data.errorMessage) {
+                            this.errorMessage = e.response.data.errorMessage
+                        }
+                    });
+                    break;
+                }
             }
         }
     },
@@ -246,6 +259,7 @@ nav {
     padding:10px;
 
     a{
+
         padding:10px;
         color: $primary-color-text;
     }
@@ -253,7 +267,8 @@ nav {
 
 ul {
     display:flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }
 
 button {
