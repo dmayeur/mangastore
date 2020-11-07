@@ -64,8 +64,6 @@ I tried my best to respect SoC and DRY principles.
 
 For exemple, all the API calls logic are made in external JS files so the view doesn't have to bother with how the API should be called. Moreover, I also used the broker pattern so if I ever want to change the API calls from Axios library to another it would be done easily without redoing all my app.
 
-
-
 ## Examples
 
 A few screens to show how the site look like:
@@ -75,3 +73,13 @@ A few screens to show how the site look like:
   <img src="/exemple2.png" width="32%" height="auto"/>
   <img src="/exemple3.png" width="32%" height="auto"/>
 </p>
+
+## Wrapping up
+
+There's always the possibility of adding extra features for the site, but I think I found a good middle ground to show what I'm capable of.
+
+It made me getting use to Vue, explore different things (like Vuex store), I have made lot of different things in the site (Auth with cookies, Cart with localstorage, a CRUD, a rating/review system...)
+
+Making a mini framework from scratch (beside a JWT-token library) was definitely my favourite part of the project. I built it slowly, added features everytime I needed them. Thinking how to change it to make it better etc.
+
+I'm pretty satisfied with how it turned out, I managed to code the features I wanted, and I was able to solve all the issues I encountered, which is the most important.
