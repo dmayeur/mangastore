@@ -68,7 +68,7 @@ For exemple, all the API calls logic are made in external JS files so the view d
 
 ## Examples
 
-A few screen to show how the site look like:
+A few screens to show how the site look like:
 
 <p float="left">
   <img src="/exemple1.png" width="32%" height="auto" />
