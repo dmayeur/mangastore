@@ -18,6 +18,6 @@ export class ReviewsBroker extends BrokerCore {
     }
 
     async removeReview(id, data) {
-        return await this.APICommunicator.putRequest('/reviews/'+id, data);
+        return await this.APICommunicator.deleteRequest('/admin/reviews/'+id, data);
     }
 }

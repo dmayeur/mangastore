@@ -17,4 +17,12 @@ export class OrdersBroker extends BrokerCore {
     async getById(id){
         return await this.APICommunicator.getRequest('/orders/'+id);
     }
+
+    async putStatus(id, data){
+        return await this.APICommunicator.putRequest('/orders/'+id, data);
+    }
+
+    async delete(id, token){
+        return await this.APICommunicator.deleteRequest('/orders/'+id, token);
+    }
 }

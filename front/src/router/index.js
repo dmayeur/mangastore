@@ -196,7 +196,20 @@ const routes = [
     meta: {
       title: 'Admin - Commandes'
     },
-    component: () => import('../admin/modify/modifyOrder.vue')
+    component: () => import('../admin/modify/ModifyOrder.vue')
+},
+{
+    path: '/404',
+    name: 'NotFound',
+    meta: {
+        title: '404 Not Found'
+    },
+    component: () => import('../views/NotFound.vue')
+},
+{
+    //redirect all the 404 to the proper page
+    path: "/:catchAll(.*)",
+    redirect: '/404'
 }
 ]
 

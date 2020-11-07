@@ -171,7 +171,14 @@ export default {
 .order-address input {
     @include input-field;
     margin-bottom: 10px;
+    width: 100%;
 }
+
+
+.input-item {
+    margin-bottom: 20px;
+}
+
 
 .cart-item {
     overflow:hidden; //so it doesn't break with the images
@@ -196,6 +203,15 @@ export default {
 
     .fas {
         @include red-icon;
+    }
+}
+
+/* ===================================================
+                    DESKTOPS
+================================================== */
+@include desktop {
+    .order-address input {
+        width: auto;
     }
 }
 

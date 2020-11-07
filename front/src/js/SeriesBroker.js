@@ -9,6 +9,10 @@ export class SeriesBroker extends BrokerCore {
         return await this.APICommunicator.getRequest('/series'+queryURL);
     }
 
+    async getAllReviews(idSerie){
+        return await this.APICommunicator.getRequest('/series/'+idSerie+'/reviews');
+    }
+
     async getAdmin(){
         return await this.APICommunicator.getRequest('/admin/series');
     }

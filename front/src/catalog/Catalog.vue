@@ -87,6 +87,7 @@ export default {
             })
             .catch ((error) => {
                 if(error.response.data.errorMessage) {
+                    //mostly for empty results
                     this.errorMessage = error.response.data.errorMessage
                 }
                 this.pages = 1;
@@ -128,26 +129,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.slide-right-move{
-  transition: transform 0.3s;
-}
-
-.slide-right-enter-active {
-    transition: all .3s ease;
-}
-
-.slide-right-leave-active{
-    transform: translateX(50px);
-    transition: all .5s;
-}
-
-.slide-right-enter-from, .slide-right-leave-to {
-    transform: translateX(20px);
-    opacity: 0;
-}
-
-
 
 // the hidden checkbox code that is used to display the menu in mobile
 .catalog-search--toggle{
@@ -257,6 +238,28 @@ export default {
         }
     }
 }
+
+/* ===================================================
+                ANIMATIONS
+================================================== */
+.slide-right-move{
+  transition: transform 0.3s;
+}
+
+.slide-right-enter-active {
+    transition: all .3s ease;
+}
+
+.slide-right-leave-active{
+    transform: translateX(50px);
+    transition: all .5s;
+}
+
+.slide-right-enter-from, .slide-right-leave-to {
+    transform: translateX(20px);
+    opacity: 0;
+}
+
 
 
 </style>

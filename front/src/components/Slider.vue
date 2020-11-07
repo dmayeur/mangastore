@@ -7,13 +7,6 @@
         </li>
     </transition-group>
     <i class="fas fa-arrow-circle-right arrow next" @click="next"></i>
-    <div class="slider-selectors">
-        <i class="fas fa-circle"></i>
-        <i class="fas fa-circle"></i>
-        <i class="fas fa-circle"></i>
-        <i class="fas fa-circle"></i>
-        <i class="fas fa-circle"></i>
-    </div>
 </div>
 </template>
 
@@ -93,41 +86,90 @@ export default {
 
 <style lang="scss" scoped>
 .slider {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+
+    li {
+        display:flex;
+        font-size: 2rem;
+        text-align: left;
+    }
+
     margin: 0 auto;
-    width: 50%;
     position: relative;
 }
 
 .slider-items {
-    padding:20px;
+    padding: 0 20px;
     display:flex;
-}
-
-.fas {
-    color: $primary-color;
 }
 
 .arrow {
     font-size: 3rem;
-    position: absolute;
-    top: 45%;
+    color: $primary-color;
 
     &.previous {
-        left: 0%;
+        order: 2;
     }
 
     &.next {
-        left:90%;
+        order: 3;
+    }
+}
+
+ul {
+    overflow-x: hidden;
+    flex: 0 0 100%;
+    justify-content: space-around;
+}
+
+li {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/* ===================================================
+                TABLET
+================================================== */
+@include tablet {
+//we remove the flex properties and put the arrow in absolute pos instead 
+    .slider {
+        display: block;
+    }
+    .arrow {
+        font-size: 3rem;
+        position: absolute;
+        top: 45%;
+        &.previous {
+            left: 0%;
+        }
+        &.next {
+            right: -0%;
+        }
+    }
+
+
+
+    ul {
+        margin-left: 0;
+        overflow: visible;
     }
 
 
 }
 
-li {
-    padding-left: 20px;
+/* ===================================================
+                DESKTOP
+================================================== */
+@include desktop {
+
+    .slider {
+        width: 60%;
+    }
+
+
 }
-
-
 
 /* ===================================================
                 ANIMATIONS

@@ -2,9 +2,13 @@
     <section class="serie-reviews">
         <h2>Les reviews:</h2>
 
-        <section class="serie-reviews-content">
+        <section class="serie-reviews">
             <ul v-if="reviews.length">
-                test
+                <li class="serie-review" v-for="review in reviews" :key="review.id">
+                    <p class="serie-review--rating">Note: {{ review.rating }}/5</p>
+                    <h3>{{ review.username }}</h3>
+                    <p>{{ review.content }}</p>
+                </li>
             </ul>
             <p v-else>
                 Aucune critique pour cette série.
@@ -131,10 +135,10 @@ export default {
         }
     },
     created() {
-        let reviews = new ReviewsBroker();
-        Promise.resolve(reviews.getAll(this.$route.params.id))
+        let series = new SeriesBroker();
+        Promise.resolve(series.getAllReviews(this.$route.params.id))
         .then( (response) => {
-            this.reviews = response.data;
+            this.reviews = Object.values(response.data);
         })
         .catch(() => {
             this.reviews = [];
@@ -149,46 +153,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.reviews, #showPost .article{
-   width:50%;
-   flex: 0 0 50%;
-   flex-grow: 0.5;
+
+
+/* User reviews
+================================================== */
+.serie-review {
+    padding: 10px;
+    border:1px solid black;
+
+    &:nth-of-type(odd){
+        background-color:#e1e7f5;
+
+    }
+    &:nth-of-type(even){
+        background-color:#fff;
+        border-top: none;
+    }
+
+    &--rating {
+        float:right;
+    }
 }
 
-.article{
-   flex-basis:100%;
-}
-
-form{
-   background-color: #c4c4c4;
-   padding:100px 20px 20px;
-   margin-top:-40px;
-   z-index:-100;
-}
-
-form input,  form textarea, button {
-   text-align: left;
-   margin-bottom:20px;
-   display:block;
-}
-
-.serie-reviews-new h2{
-   padding:10px;
-   background-color:$primary-color;
-   color:$primary-color-text;
-   z-index:1;
-   width:80%;
-   margin:0 auto;
-   border-radius: 20px;
-   position:relative;
-}
-
-form label {
-   text-align: left;
-   display:block;
-}
-
+/* stars rating
+================================================== */
 .serie-reviews-rating {
+    margin-top: 30px;
+
     display: flex;
     flex-direction: row-reverse;
     justify-content: flex-end;
@@ -200,12 +191,41 @@ form label {
     color:orange;
 }
 
+
+/* Create review
+================================================== */
+.serie-reviews-new h2{
+   padding:10px;
+   background-color:$primary-color;
+   color:$primary-color-text;
+   z-index:1;
+   width:80%;
+   margin:0 auto;
+   border-radius: 20px;
+   position:relative;
+}
+
+textarea {
+    @include input-field;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    max-width: 100%;
+}
+
 .serie-reviews-content {
     margin-top: 20px;
 }
 
 .serie-reviews-content button {
+    display:block;
     margin-top: 10px;
+}
+
+form{
+   background-color: #c4c4c4;
+   padding:100px 20px 20px;
+   margin-top:-40px;
+   z-index:-100;
 }
 
 @media (hover: hover) {

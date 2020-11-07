@@ -72,9 +72,19 @@ export default {
 <style lang="scss" scoped>
 input, textarea {
     @include input-field;
+    width: 100%;
 }
 
 .input-item {
     margin-bottom: 20px;
+}
+
+/* ===================================================
+                    DESKTOPS
+================================================== */
+@include desktop {
+    input {
+        width: auto;
+    }
 }
 </style>

@@ -47,7 +47,7 @@
                         <div class='button-container'>
                             <Button type="submit">Connexion</Button>
                         </div>
-                        <small>Pour des soucis de test, le compte <strong>Toto</strong> avec le mot de passe <strong>Test01</strong> est un compte admin. </small>
+                        <small>Pour des soucis de test, le compte <strong>Toto</strong> avec le mot de passe <strong>test01</strong> est un compte admin. </small>
                     </form>
                 </section>
                 <footer class="modal-footer">
