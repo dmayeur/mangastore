@@ -1,6 +1,7 @@
 <p align="center">
-  <img width="300" height="300" src="/front/src/media/logo.png" alt="mangastore logo"> 
+  <img width="300" height="300" src="/front/src/media/logo.png" alt="mangastore logo">
 </p>
+
 # mangastore
 
 ## Description
@@ -11,7 +12,7 @@ This is a fictive e-commerce site done as 3WA end of formation project.
 
 ### Database
 
-Use the SQL export of the database to create the DB
+Use the SQL export of the database to create the DB (**mangastore-dump.sql**)
 
 ### In api folder
 
@@ -20,7 +21,7 @@ composer install
 ```
 
 The server must accept htaccess redirections.
-You may need to change the configuration of the DB access in **system/Database.php**
+You may need to change the configuration of the DB access in **system/Database.php** (mine was made with default xampp config, root and no password account)
 
 ### In front folder
 
@@ -28,13 +29,13 @@ You may need to change the configuration of the DB access in **system/Database.p
 npm install
 ```
 
-You may need to change **vue.config.js** proxy accordingly to your config (mine was made with default xampp config)
+You may need to change **vue.config.js** proxy accordingly to your config (mine was made with default xampp config, aka redirecting the requests to the 80 port)
 
 ```
 npm run serve
 ```
 
-And you can finally access to the site
+And you can finally access to the site !
 
 ## Technologies used
 
@@ -42,9 +43,11 @@ And you can finally access to the site
 
 I made everything with Vue.js.
 
-Form validators are made here and not in the back for better feedback and UX.
-
 The connection with the back is made with API calls with Axios.
+
+Some Form validators are made here and not in the back for instant feedback and better UX. The checks are more lenient on admin routes.
+
+Vuex store is used to handle authentication and the cart through the app.
 
 ### Back
 
@@ -55,6 +58,20 @@ The project respect MVC pattern.
 
 The authentication is made using JWT tokens to keep it as RESTful as it gets.
 
+## General Principles
+
+I tried my best to respect SoC and DRY principles.
+
+For exemple, all the API calls logic are made in external JS files so the view doesn't have to bother with how the API should be called. Moreover, I also used the broker pattern so if I ever want to change the API calls from Axios library to another it would be done easily without redoing all my app.
+
+
+
 ## Examples
 
 A few screen to show how the site look like:
+
+<p float="left">
+  <img src="/exemple1.png" width="32%" height="auto" />
+  <img src="/exemple2.png" width="32%" height="auto"/>
+  <img src="/exemple3.png" width="32%" height="auto"/>
+</p>
