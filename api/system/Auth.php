@@ -64,7 +64,13 @@ class Auth {
     }
 
     public function decode($jwt) {
-        return JWT::decode($jwt, $this->publicKey, ['RS256']);
+        $object =  JWT::decode($jwt, $this->publicKey, ['RS256']);
+
+        //check if the token has been generated more than 24 hours ago
+        if( ((time() - $object->iat)/3600) > 24 ){
+            throw new RestException("Le token a expiré", 401);
+        }
+        return $object;
     }
 
     public function getUser($jwt) {
