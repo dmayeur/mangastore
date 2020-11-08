@@ -1,5 +1,11 @@
 <template lang="html">
 <div>
+    <h1>Création d'une catégorie</h1>
+
+    <Notice type="error" v-if="errorMessage">
+        <p>{{errorMessage}}</p>
+    </Notice>
+
     <form method="post" @submit.prevent="onSubmit">
         <div class="input-item">
             <label for="category">Nom de la catégorie: </label>
@@ -25,6 +31,7 @@
 <script>
 import  {CategoriesBroker} from '@/js/CategoriesBroker.js';
 import Button from '@/components/Button.vue'
+import Notice from '@/components/Notice.vue';
 
 export default {
     data: function () {
@@ -32,11 +39,13 @@ export default {
             category: "",
             categories: {},
             categoryParent: -1,
-            edit: false
+            edit: false,
+            errorMessage: ""
         }
     },
     components: {
-        Button
+        Button,
+        Notice
     },
     methods: {
         onSubmit() {

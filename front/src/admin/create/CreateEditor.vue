@@ -1,5 +1,11 @@
 <template lang="html">
 <div>
+    <h1>Création d'un éditeur</h1>
+
+    <Notice type="error" v-if="errorMessage">
+        <p>{{errorMessage}}</p>
+    </Notice>
+
     <form method="post" @submit.prevent="onSubmit">
         <div class="input-item">
             <label for="editor">Nom de l'éditeur: </label>
@@ -15,15 +21,18 @@
 <script>
 import  {EditorsBroker} from '@/js/EditorsBroker.js';
 import Button from '@/components/Button.vue'
+import Notice from '@/components/Notice.vue';
 
 export default {
     data: function () {
         return {
             editor: "",
+            errorMessage: ""
         }
     },
     components: {
-        Button
+        Button,
+        Notice
     },
     methods: {
         onSubmit() {

@@ -2,6 +2,10 @@
 <div>
     <h1>Modification de l'éditeur: {{ editorStatic }}</h1>
 
+    <Notice type="error" v-if="errorMessage">
+        <p>{{errorMessage}}</p>
+    </Notice>
+
     <section>
         <h2>Editeur:</h2>
         <div class="input-item">
@@ -42,7 +46,9 @@
 
 <script>
 import  {EditorsBroker} from '@/js/EditorsBroker.js';
+
 import Button from '@/components/Button.vue'
+import Notice from '@/components/Notice.vue';
 
 export default {
     data: function () {
@@ -50,11 +56,13 @@ export default {
             editor: "",
             editorStatic: "",
             price: "",
-            priceCode: ""
+            priceCode: "",
+            errorMessage: ""
         }
     },
     components: {
-        Button
+        Button,
+        Notice
     },
     methods: {
         changeEditor() {

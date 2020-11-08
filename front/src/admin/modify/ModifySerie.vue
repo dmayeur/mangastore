@@ -3,6 +3,10 @@
     <h1>{{serie.title}}</h1>
     <p>Nombre de volumes: {{serie.nbVolumes}}</p>
 
+    <Notice type="error" v-if="errorMessage">
+        <p>{{errorMessage}}</p>
+    </Notice>
+
     <section class="serie-mangas-add">
         <h2>Ajouter un volume</h2>
         <form method="post" enctype="multipart/form-data">
@@ -108,6 +112,7 @@ import  {CategoriesBroker} from '@/js/CategoriesBroker.js';
 import  {AuthorsBroker} from '@/js/AuthorsBroker.js';
 
 import Button from '@/components/Button.vue';
+import Notice from '@/components/Notice.vue';
 
 export default {
     data: function() {
@@ -119,11 +124,13 @@ export default {
             categories: {},
             categoriesChecked: [],
             authors: {},
-            author: ""
+            author: "",
+            errorMessage: ""
         }
     },
     components: {
-        Button
+        Button,
+        Notice
     },
     methods: {
         processFile(event) {

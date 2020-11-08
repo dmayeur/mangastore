@@ -1,5 +1,11 @@
 <template lang="html">
 <div>
+    <h1>Création d'une série</h1>
+
+    <Notice type="error" v-if="errorMessage">
+        <p>{{errorMessage}}</p>
+    </Notice>
+
     <form method="post" @submit.prevent="onSubmit">
         <div class="input-item">
             <label for="serie-name">Nom de la série: </label>
@@ -62,7 +68,9 @@ import  {EditorsBroker} from '@/js/EditorsBroker.js';
 import  {CategoriesBroker} from '@/js/CategoriesBroker.js';
 import  {AuthorsBroker} from '@/js/AuthorsBroker.js';
 import  {SeriesBroker} from '@/js/SeriesBroker.js';
-import Button from '@/components/Button.vue'
+
+import Button from '@/components/Button.vue';
+import Notice from '@/components/Notice.vue';
 
 export default {
     data: function () {
@@ -78,11 +86,13 @@ export default {
             author: 1,
             author2: 1,
             authorsNumber: 1,
-            mangaNumber: 1
+            mangaNumber: 1,
+            errorMessage: ""
         }
     },
     components: {
-        Button
+        Button,
+        Notice
     },
     methods: {
         updateEditors(response) {

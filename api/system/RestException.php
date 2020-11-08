@@ -17,7 +17,7 @@ class RestException extends Exception {
             $coreController = new CoreController();
             $coreController->setHttpHeaders('500');
             $error = [
-                'message' => $e->getMessage(),
+                'errorMessage' => $e->getMessage(),
                 'line' => $e->getLine(),
                 'file' => $e->getFile()
             ];

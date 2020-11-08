@@ -2,6 +2,11 @@
   <div>
       <h1>Bienvenue sur la page d'administration de mangastore !</h1>
       <p>Ici vous pouvez gérer le contenu de votre site selon votre besoin.</p>
+
+      <Notice type="error" v-if="errorMessage">
+          <p>{{errorMessage}}</p>
+      </Notice>
+
       <nav>
           <ul>
               <li><router-link to="/admin/series">Séries</router-link></li>
@@ -32,6 +37,7 @@ import  {ReviewsBroker} from '@/js/ReviewsBroker.js';
 import  {OrdersBroker} from '@/js/OrdersBroker.js';
 
 import Button from '@/components/Button.vue';
+import Notice from '@/components/Notice.vue';
 import AdminTable from '@/admin/AdminTable.vue';
 
 export default {
@@ -40,12 +46,14 @@ export default {
             tableHeader: {},
             tableValues: {},
             create: this.$route.meta.create, //some routes doesn't need a create or modify button (configured in the router)
-            modify: this.$route.meta.modify
+            modify: this.$route.meta.modify,
+            errorMessage: ""
         }
     },
     components: {
         AdminTable,
-        Button
+        Button,
+        Notice
     },
     methods: {
         updateTable: function(response) {

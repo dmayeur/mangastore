@@ -2,6 +2,10 @@
 <div>
     <h1>Commande n°{{order.id}}</h1>
 
+    <Notice type="error" v-if="errorMessage">
+        <p>{{errorMessage}}</p>
+    </Notice>
+
     <h2>Détail de la commande</h2>
     <p>Prix total de la commande: {{ order.total_order_price }}€</p>
     <p>Date de commande: {{order.order_date}}</p>
@@ -35,16 +39,19 @@ import  {OrdersBroker} from '@/js/OrdersBroker.js';
 
 
 import Button from '@/components/Button.vue';
+import Notice from '@/components/Notice.vue';
 
 export default {
     data: function() {
         return {
             order: {},
-            status: "In process"
+            status: "In process",
+            errorMessage: ""
         }
     },
     components: {
-        Button
+        Button,
+        Notice
     },
     methods: {
         getImgPath(image) {

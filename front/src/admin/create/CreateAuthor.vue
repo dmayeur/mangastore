@@ -1,5 +1,11 @@
 <template lang="html">
 <div>
+    <h1>Création d'un nouveau mangaka</h1>
+
+    <Notice type="error" v-if="errorMessage">
+        <p>{{errorMessage}}</p>
+    </Notice>
+
     <form method="post" @submit.prevent="onSubmit">
         <div class="input-item">
             <label for="author">Nom de l'auteur: </label>
@@ -18,16 +24,19 @@
 <script>
 import  {AuthorsBroker} from '@/js/AuthorsBroker.js';
 import Button from '@/components/Button.vue'
+import Notice from '@/components/Notice.vue';
 
 export default {
     data: function () {
         return {
             author: "",
-            edit: false
+            edit: false,
+            errorMessage: ""
         }
     },
     components: {
-        Button
+        Button,
+        Notice
     },
     methods: {
         onSubmit() {
