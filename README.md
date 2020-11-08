@@ -12,7 +12,7 @@ This is a fictive e-commerce site done as 3WA end of formation project.
 
 ### Database
 
-Use the SQL export of the database to create the DB (**mangastore-dump.sql**)
+Use the SQL export of the database to create the DB (**mangastore.sql**)
 
 ### In api folder
 
